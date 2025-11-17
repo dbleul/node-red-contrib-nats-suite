@@ -1,0 +1,443 @@
+[
+  {
+    "id": "nats-suite-kv-put-example",
+    "type": "tab",
+    "label": "NATS-SUITE KV Put Examples",
+    "disabled": false,
+    "info": "Beispiele für NATS-SUITE KV Put Node mit verschiedenen Operationen"
+  },
+  {
+    "id": "nats-suite-server",
+    "type": "nats-suite-server",
+    "z": "nats-suite-kv-put-example",
+    "name": "NATS Server",
+    "server": "localhost:4222",
+    "timeout": 10000,
+    "pingInterval": 30000,
+    "maxPingOut": 3,
+    "authMethod": "none",
+    "enableTLS": false,
+    "tlsRejectUnauthorized": true,
+    "tlsCaFile": "",
+    "tlsCertFile": "",
+    "tlsKeyFile": "",
+    "x": 200,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject-put-value",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Put Value",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "{\"value\":23.5,\"unit\":\"°C\",\"timestamp\":\"{{$timestamp}}\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      ["nats-suite-kv-put-value"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-put-value",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Put Value",
+    "server": "nats-suite-server",
+    "operation": "put",
+    "bucket": "sensors",
+    "key": "sensor.temperature",
+    "value": "{\"value\":23.5,\"unit\":\"°C\",\"timestamp\":\"{{$timestamp}}\"}",
+    "autoStringify": true,
+    "ttl": 0,
+    "x": 400,
+    "y": 200,
+    "wires": [
+      ["debug-put-value"]
+    ]
+  },
+  {
+    "id": "debug-put-value",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Put Value Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "inject-create-value",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Create Value",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "{\"value\":45.2,\"unit\":\"%\",\"timestamp\":\"{{$timestamp}}\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 300,
+    "wires": [
+      ["nats-suite-kv-create-value"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-create-value",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Create Value",
+    "server": "nats-suite-server",
+    "operation": "create",
+    "bucket": "sensors",
+    "key": "sensor.humidity",
+    "value": "{\"value\":45.2,\"unit\":\"%\",\"timestamp\":\"{{$timestamp}}\"}",
+    "autoStringify": true,
+    "ttl": 0,
+    "x": 400,
+    "y": 300,
+    "wires": [
+      ["debug-create-value"]
+    ]
+  },
+  {
+    "id": "debug-create-value",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Create Value Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "inject-update-value",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Update Value",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "{\"value\":1013.25,\"unit\":\"hPa\",\"timestamp\":\"{{$timestamp}}\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      ["nats-suite-kv-update-value"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-update-value",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Update Value",
+    "server": "nats-suite-server",
+    "operation": "update",
+    "bucket": "sensors",
+    "key": "sensor.pressure",
+    "value": "{\"value\":1013.25,\"unit\":\"hPa\",\"timestamp\":\"{{$timestamp}}\"}",
+    "autoStringify": true,
+    "ttl": 0,
+    "x": 400,
+    "y": 400,
+    "wires": [
+      ["debug-update-value"]
+    ]
+  },
+  {
+    "id": "debug-update-value",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Update Value Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "inject-delete-value",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Delete Value",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "sensor.old",
+    "payloadType": "str",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      ["nats-suite-kv-delete-value"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-delete-value",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Delete Value",
+    "server": "nats-suite-server",
+    "operation": "delete",
+    "bucket": "sensors",
+    "key": "sensor.old",
+    "value": "",
+    "autoStringify": false,
+    "ttl": 0,
+    "x": 400,
+    "y": 500,
+    "wires": [
+      ["debug-delete-value"]
+    ]
+  },
+  {
+    "id": "debug-delete-value",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Delete Value Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "inject-purge-bucket",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Purge Bucket",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 600,
+    "wires": [
+      ["nats-suite-kv-purge-bucket"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-purge-bucket",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Purge Bucket",
+    "server": "nats-suite-server",
+    "operation": "purge",
+    "bucket": "sensors",
+    "key": "",
+    "value": "",
+    "autoStringify": false,
+    "ttl": 0,
+    "x": 400,
+    "y": 600,
+    "wires": [
+      ["debug-purge-bucket"]
+    ]
+  },
+  {
+    "id": "debug-purge-bucket",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Purge Bucket Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "inject-ttl-example",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "TTL Example",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "{\"value\":\"temporary\",\"expires\":\"{{$timestamp + 30000}}\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 700,
+    "wires": [
+      ["nats-suite-kv-ttl-example"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-ttl-example",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "TTL Example",
+    "server": "nats-suite-server",
+    "operation": "put",
+    "bucket": "sensors",
+    "key": "sensor.temporary",
+    "value": "{\"value\":\"temporary\",\"expires\":\"{{$timestamp + 30000}}\"}",
+    "autoStringify": true,
+    "ttl": 30,
+    "x": 400,
+    "y": 700,
+    "wires": [
+      ["debug-ttl-example"]
+    ]
+  },
+  {
+    "id": "debug-ttl-example",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "TTL Example Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 700,
+    "wires": []
+  },
+  {
+    "id": "inject-batch-data",
+    "type": "inject",
+    "z": "nats-suite-kv-put-example",
+    "name": "Batch Data Generator",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "1",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "{\"sensors\":[{\"id\":\"temp1\",\"value\":{{$randomInt(20,30)}}},{\"id\":\"hum1\",\"value\":{{$randomInt(40,60)}}},{\"id\":\"press1\",\"value\":{{$randomInt(1000,1020)}}}]}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 800,
+    "wires": [
+      ["nats-suite-kv-batch-data"]
+    ]
+  },
+  {
+    "id": "nats-suite-kv-batch-data",
+    "type": "nats-suite-kv-put",
+    "z": "nats-suite-kv-put-example",
+    "name": "Batch Data",
+    "server": "nats-suite-server",
+    "operation": "put",
+    "bucket": "sensors",
+    "key": "sensor.batch",
+    "value": "{\"sensors\":[{\"id\":\"temp1\",\"value\":{{$randomInt(20,30)}}},{\"id\":\"hum1\",\"value\":{{$randomInt(40,60)}}},{\"id\":\"press1\",\"value\":{{$randomInt(1000,1020)}}}]}",
+    "autoStringify": true,
+    "ttl": 0,
+    "x": 400,
+    "y": 800,
+    "wires": [
+      ["debug-batch-data"]
+    ]
+  },
+  {
+    "id": "debug-batch-data",
+    "type": "debug",
+    "z": "nats-suite-kv-put-example",
+    "name": "Batch Data Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 800,
+    "wires": []
+  },
+  {
+    "id": "comment-1",
+    "type": "comment",
+    "z": "nats-suite-kv-put-example",
+    "name": "NATS-SUITE KV Put Beispiele",
+    "info": "Verschiedene NATS-SUITE KV Put Szenarien:\n\n1. **Put Value**: Speichert einen Wert (überschreibt existierende)\n2. **Create Value**: Erstellt einen neuen Wert (fehlschlag wenn existiert)\n3. **Update Value**: Aktualisiert einen existierenden Wert (fehlschlag wenn nicht existiert)\n4. **Delete Value**: Löscht einen Wert\n5. **Purge Bucket**: Löscht alle Werte in einem Bucket\n6. **TTL Example**: Speichert mit Time-To-Live\n7. **Batch Data**: Speichert Batch-Daten\n\n**Features:**\n- Put, Create, Update, Delete, Purge Operationen\n- Auto-Stringify für JSON Objekte\n- TTL (Time-To-Live) Support\n- Auto-Bucket Creation\n- Error Handling\n- Connection Pooling",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]
+
+
+
+
+
+

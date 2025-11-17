@@ -1,0 +1,69 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-suite-reply', {
+    category: 'NATS Suite',
+    color: '#2FAF9C',
+    icon: 'nats-icon-white.png',
+    align: 'right',
+    defaults: {
+      name: { value: "" },
+      server: { 
+        value: "",
+        type: 'nats-suite-server',
+        required: true
+      },
+      subject: { value: "" }
+    },
+    inputs: 1,
+    outputs: 1,
+    label: function () {
+      return this.name || `reply (${this.subject || 'subject'})`;
+    },
+    paletteLabel: 'nats reply',
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-suite-reply">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Reply">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-server"><i class="fa fa-server"></i> NATS Server</label>
+      <input type="text" id="node-input-server">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-subject"><i class="fa fa-envelope"></i> Subject</label>
+      <input type="text" id="node-input-subject" placeholder="service.request">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Subject to listen for requests
+      </div>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-suite-reply">
+  <p>Dedicated Reply node for Request/Reply pattern (server-side).</p>
+  
+  <h3>Usage</h3>
+  <p>Listens for requests on the configured subject and sends replies using msg.payload.</p>
+  
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>msg.payload</dt>
+    <dd>Reply data to send</dd>
+    
+    <dt>msg._reply / msg.reply</dt>
+    <dd>Reply subject (from incoming request)</dd>
+  </dl>
+  
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>msg.payload</dt>
+    <dd>Request payload</dd>
+    
+    <dt>msg._reply</dt>
+    <dd>Reply subject</dd>
+  </dl>
+</script>
+

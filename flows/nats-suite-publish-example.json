@@ -1,0 +1,322 @@
+[
+  {
+    "id": "nats-suite-publish-example",
+    "type": "tab",
+    "label": "NATS Publish Examples",
+    "disabled": false,
+    "info": "Beispiele für verschiedene NATS Publish Szenarien mit allen Features"
+  },
+  {
+    "id": "nats-suite-server",
+    "type": "nats-suite-server",
+    "z": "nats-suite-publish-example",
+    "name": "NATS Server",
+    "server": "localhost:4222",
+    "timeout": 10000,
+    "pingInterval": 30000,
+    "maxPingOut": 3,
+    "authMethod": "none",
+    "enableTLS": false,
+    "tlsRejectUnauthorized": true,
+    "tlsCaFile": "",
+    "tlsCertFile": "",
+    "tlsKeyFile": "",
+    "x": 200,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject-nats-suite-value",
+    "type": "inject",
+    "z": "nats-suite-publish-example",
+    "name": "NATS-SUITE Value Example",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "sensor.temperature",
+    "payload": "23.5",
+    "payloadType": "num",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      ["nats-suite-publish-value"]
+    ]
+  },
+  {
+    "id": "nats-suite-publish-value",
+    "type": "nats-suite-publish",
+    "z": "nats-suite-publish-example",
+    "name": "NATS-SUITE Value Publisher",
+    "server": "nats-suite-server",
+    "dataformat": "uns_value",
+    "datatypeOverride": "auto",
+    "datapointid": "sensor.temperature",
+    "name": "Temperature Sensor",
+    "enableBuffer": false,
+    "bufferSize": 1000,
+    "bufferMode": "drop-oldest",
+    "enableBatch": false,
+    "batchSize": 100,
+    "batchInterval": 1000,
+    "batchMode": "hybrid",
+    "enableAutoReply": false,
+    "replyTimeout": 5000,
+    "enableRateLimit": false,
+    "rateLimit": 100,
+    "rateLimitWindow": 1000,
+    "rateLimitBurst": 20,
+    "rateLimitAction": "drop",
+    "debug": true,
+    "x": 400,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "inject-nats-suite-event",
+    "type": "inject",
+    "z": "nats-suite-publish-example",
+    "name": "NATS-SUITE Event Example",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "type",
+        "vt": "str"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "alarm.high-temperature",
+    "payload": "{\"severity\":\"high\",\"message\":\"Temperature too high\"}",
+    "payloadType": "json",
+    "type": "point",
+    "x": 150,
+    "y": 300,
+    "wires": [
+      ["nats-suite-publish-event"]
+    ]
+  },
+  {
+    "id": "nats-suite-publish-event",
+    "type": "nats-suite-publish",
+    "z": "nats-suite-publish-example",
+    "name": "NATS-SUITE Event Publisher",
+    "server": "nats-suite-server",
+    "dataformat": "event",
+    "datapointid": "alarm.high-temperature",
+    "name": "High Temperature Alarm",
+    "enableBuffer": false,
+    "bufferSize": 1000,
+    "bufferMode": "drop-oldest",
+    "enableBatch": false,
+    "batchSize": 100,
+    "batchInterval": 1000,
+    "batchMode": "hybrid",
+    "enableAutoReply": false,
+    "replyTimeout": 5000,
+    "enableRateLimit": false,
+    "rateLimit": 100,
+    "rateLimitWindow": 1000,
+    "rateLimitBurst": 20,
+    "rateLimitAction": "drop",
+    "debug": true,
+    "x": 400,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "inject-specific-topic",
+    "type": "inject",
+    "z": "nats-suite-publish-example",
+    "name": "Specific Topic Example",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "custom.sensor.data",
+    "payload": "{\"sensor\":\"humidity\",\"value\":45.2,\"unit\":\"%\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      ["nats-suite-publish-specific"]
+    ]
+  },
+  {
+    "id": "nats-suite-publish-specific",
+    "type": "nats-suite-publish",
+    "z": "nats-suite-publish-example",
+    "name": "Specific Topic Publisher",
+    "server": "nats-suite-server",
+    "dataformat": "specific_topic",
+    "datapointid": "custom.sensor.data",
+    "name": "Custom Sensor Data",
+    "enableBuffer": false,
+    "bufferSize": 1000,
+    "bufferMode": "drop-oldest",
+    "enableBatch": false,
+    "batchSize": 100,
+    "batchInterval": 1000,
+    "batchMode": "hybrid",
+    "enableAutoReply": false,
+    "replyTimeout": 5000,
+    "enableRateLimit": false,
+    "rateLimit": 100,
+    "rateLimitWindow": 1000,
+    "rateLimitBurst": 20,
+    "rateLimitAction": "drop",
+    "debug": true,
+    "x": 400,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "inject-batch-example",
+    "type": "inject",
+    "z": "nats-suite-publish-example",
+    "name": "Batch Publishing Example",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "0.5",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "sensor.batch",
+    "payload": "{\"timestamp\":\"{{$timestamp}}\",\"value\":{{$randomInt(20,30)}}}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      ["nats-suite-publish-batch"]
+    ]
+  },
+  {
+    "id": "nats-suite-publish-batch",
+    "type": "nats-suite-publish",
+    "z": "nats-suite-publish-example",
+    "name": "Batch Publisher",
+    "server": "nats-suite-server",
+    "dataformat": "uns_value",
+    "datatypeOverride": "auto",
+    "datapointid": "sensor.batch",
+    "name": "Batch Sensor Data",
+    "enableBuffer": false,
+    "bufferSize": 1000,
+    "bufferMode": "drop-oldest",
+    "enableBatch": true,
+    "batchSize": 5,
+    "batchInterval": 2000,
+    "batchMode": "hybrid",
+    "enableAutoReply": false,
+    "replyTimeout": 5000,
+    "enableRateLimit": false,
+    "rateLimit": 100,
+    "rateLimitWindow": 1000,
+    "rateLimitBurst": 20,
+    "rateLimitAction": "drop",
+    "debug": true,
+    "x": 400,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "inject-rate-limit",
+    "type": "inject",
+    "z": "nats-suite-publish-example",
+    "name": "Rate Limit Test",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "0.1",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "sensor.rate-test",
+    "payload": "{{$randomInt(1,100)}}",
+    "payloadType": "num",
+    "x": 150,
+    "y": 600,
+    "wires": [
+      ["nats-suite-publish-rate-limit"]
+    ]
+  },
+  {
+    "id": "nats-suite-publish-rate-limit",
+    "type": "nats-suite-publish",
+    "z": "nats-suite-publish-example",
+    "name": "Rate Limited Publisher",
+    "server": "nats-suite-server",
+    "dataformat": "uns_value",
+    "datatypeOverride": "auto",
+    "datapointid": "sensor.rate-test",
+    "name": "Rate Test Sensor",
+    "enableBuffer": false,
+    "bufferSize": 1000,
+    "bufferMode": "drop-oldest",
+    "enableBatch": false,
+    "batchSize": 100,
+    "batchInterval": 1000,
+    "batchMode": "hybrid",
+    "enableAutoReply": false,
+    "replyTimeout": 5000,
+    "enableRateLimit": true,
+    "rateLimit": 10,
+    "rateLimitWindow": 1000,
+    "rateLimitBurst": 5,
+    "rateLimitAction": "drop-warn",
+    "debug": true,
+    "x": 400,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "comment-1",
+    "type": "comment",
+    "z": "nats-suite-publish-example",
+    "name": "NATS Publish Beispiele",
+    "info": "Verschiedene NATS Publish Szenarien:\n\n1. **NATS-SUITE Value**: Einfache Werte mit automatischer Datatype-Erkennung\n2. **NATS-SUITE Event**: Strukturierte Events mit UUID und Timestamp\n3. **Specific Topic**: Custom NATS Subjects außerhalb NATS-SUITE Schema\n4. **Batch Publishing**: Gruppierung von Messages für bessere Performance\n5. **Rate Limiting**: Schutz vor Message-Flooding mit Token Bucket\n\n**Features:**\n- Automatische Datatype-Erkennung (1-6)\n- Manuelle Datatype-Override\n- Message Buffering bei Disconnect\n- Batch Publishing (Size/Time/Hybrid)\n- Rate Limiting (Drop/Delay)\n- Auto-Reply Handler",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]
+

@@ -1,0 +1,15 @@
+node_modules/
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+.npm
+.eslintcache
+package-lock.json
+yarn.lock
+
+# Ignore everything in examples directory except flows.json
+examples/**
+!examples/flows.json
+

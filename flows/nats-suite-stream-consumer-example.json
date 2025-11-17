@@ -1,0 +1,510 @@
+[
+  {
+    "id": "nats-suite-stream-consumer-example",
+    "type": "tab",
+    "label": "NATS-SUITE Stream Consumer Examples",
+    "disabled": false,
+    "info": "Beispiele für NATS-SUITE Stream Consumer Node mit verschiedenen Konfigurationen"
+  },
+  {
+    "id": "nats-suite-server",
+    "type": "nats-suite-server",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "NATS Server",
+    "server": "localhost:4222",
+    "timeout": 10000,
+    "pingInterval": 30000,
+    "maxPingOut": 3,
+    "authMethod": "none",
+    "enableTLS": false,
+    "tlsRejectUnauthorized": true,
+    "tlsCaFile": "",
+    "tlsCertFile": "",
+    "tlsKeyFile": "",
+    "x": 200,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject-pull-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Pull Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "5",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      ["nats-suite-stream-consumer-pull"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-pull",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Pull Consumer",
+    "server": "nats-suite-server",
+    "streamName": "test-stream",
+    "consumerName": "test-consumer",
+    "consumerType": "pull",
+    "subjectFilter": "test.message",
+    "ackPolicy": "explicit",
+    "deliveryPolicy": "new",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 5,
+    "idleHeartbeat": 0,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": false,
+    "enableReplay": false,
+    "debug": true,
+    "x": 400,
+    "y": 200,
+    "wires": [
+      ["debug-pull-consumer"]
+    ]
+  },
+  {
+    "id": "debug-pull-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Pull Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "inject-push-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Push Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 300,
+    "wires": [
+      ["nats-suite-stream-consumer-push"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-push",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Push Consumer",
+    "server": "nats-suite-server",
+    "streamName": "sensor-stream",
+    "consumerName": "sensor-consumer",
+    "consumerType": "push",
+    "subjectFilter": "sensor.temperature",
+    "ackPolicy": "explicit",
+    "deliveryPolicy": "new",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 1,
+    "idleHeartbeat": 30000,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": true,
+    "enableReplay": false,
+    "debug": true,
+    "x": 400,
+    "y": 300,
+    "wires": [
+      ["debug-push-consumer"]
+    ]
+  },
+  {
+    "id": "debug-push-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Push Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "inject-replay-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Replay Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      ["nats-suite-stream-consumer-replay"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-replay",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Replay Consumer",
+    "server": "nats-suite-server",
+    "streamName": "event-stream",
+    "consumerName": "replay-consumer",
+    "consumerType": "pull",
+    "subjectFilter": "event.alarm",
+    "ackPolicy": "explicit",
+    "deliveryPolicy": "all",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 10,
+    "idleHeartbeat": 0,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": false,
+    "enableReplay": true,
+    "debug": true,
+    "x": 400,
+    "y": 400,
+    "wires": [
+      ["debug-replay-consumer"]
+    ]
+  },
+  {
+    "id": "debug-replay-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Replay Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "inject-batch-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Batch Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "10",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      ["nats-suite-stream-consumer-batch"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-batch",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Batch Consumer",
+    "server": "nats-suite-server",
+    "streamName": "batch-stream",
+    "consumerName": "batch-consumer",
+    "consumerType": "pull",
+    "subjectFilter": "batch.process",
+    "ackPolicy": "explicit",
+    "deliveryPolicy": "new",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 20,
+    "idleHeartbeat": 0,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": false,
+    "enableReplay": false,
+    "debug": true,
+    "x": 400,
+    "y": 500,
+    "wires": [
+      ["debug-batch-consumer"]
+    ]
+  },
+  {
+    "id": "debug-batch-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Batch Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "inject-durable-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Durable Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 600,
+    "wires": [
+      ["nats-suite-stream-consumer-durable"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-durable",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Durable Consumer",
+    "server": "nats-suite-server",
+    "streamName": "config-stream",
+    "consumerName": "config-consumer",
+    "consumerType": "pull",
+    "subjectFilter": "config.update",
+    "ackPolicy": "explicit",
+    "deliveryPolicy": "new",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 1,
+    "idleHeartbeat": 0,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": false,
+    "enableReplay": false,
+    "debug": true,
+    "x": 400,
+    "y": 600,
+    "wires": [
+      ["debug-durable-consumer"]
+    ]
+  },
+  {
+    "id": "debug-durable-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Durable Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "inject-throughput-consumer",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Throughput Consumer Trigger",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "0.5",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "str",
+    "x": 150,
+    "y": 700,
+    "wires": [
+      ["nats-suite-stream-consumer-throughput"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-consumer-throughput",
+    "type": "nats-suite-stream-consumer",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Throughput Consumer",
+    "server": "nats-suite-server",
+    "streamName": "throughput-stream",
+    "consumerName": "throughput-consumer",
+    "consumerType": "pull",
+    "subjectFilter": "data.high-throughput",
+    "ackPolicy": "all",
+    "deliveryPolicy": "new",
+    "startSequence": 0,
+    "startTime": "",
+    "batchSize": 50,
+    "idleHeartbeat": 0,
+    "maxDeliver": 3,
+    "ackWait": 30000,
+    "enableFlowControl": true,
+    "enableReplay": false,
+    "debug": false,
+    "x": 400,
+    "y": 700,
+    "wires": [
+      ["debug-throughput-consumer"]
+    ]
+  },
+  {
+    "id": "debug-throughput-consumer",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Throughput Consumer Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 700,
+    "wires": []
+  },
+  {
+    "id": "inject-test-data",
+    "type": "inject",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Test Data Generator",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "1",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "test.message",
+    "payload": "{\"message\":\"Test Message {{$randomInt(1,100)}}\",\"timestamp\":\"{{$timestamp}}\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 800,
+    "wires": [
+      ["nats-suite-stream-publisher-test"]
+    ]
+  },
+  {
+    "id": "nats-suite-stream-publisher-test",
+    "type": "nats-suite-stream-publisher",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Test Data Publisher",
+    "server": "nats-suite-server",
+    "streamName": "test-stream",
+    "subject": "test.message",
+    "autoCreateStream": true,
+    "retentionPolicy": "limits",
+    "maxAge": 0,
+    "maxMsgs": 1000,
+    "maxBytes": 0,
+    "maxMsgSize": 0,
+    "storage": "file",
+    "replicas": 1,
+    "duplicateWindow": 0,
+    "enableDeduplication": false,
+    "enableHeaders": false,
+    "debug": false,
+    "x": 400,
+    "y": 800,
+    "wires": [
+      ["debug-test-publisher"]
+    ]
+  },
+  {
+    "id": "debug-test-publisher",
+    "type": "debug",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "Test Publisher Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 800,
+    "wires": []
+  },
+  {
+    "id": "comment-1",
+    "type": "comment",
+    "z": "nats-suite-stream-consumer-example",
+    "name": "NATS-SUITE Stream Consumer Beispiele",
+    "info": "Verschiedene NATS-SUITE Stream Consumer Szenarien:\n\n1. **Pull Consumer**: Manuell getriggerte Nachrichtenabholung\n2. **Push Consumer**: Automatisch gepushte Nachrichten mit Heartbeat\n3. **Replay Consumer**: Replay aller Nachrichten in einem Stream\n4. **Batch Consumer**: Batch-Verarbeitung von Nachrichten\n5. **Durable Consumer**: Persistenter Consumer mit State\n6. **Throughput Consumer**: Hohe Nachrichtenrate mit Flow Control\n7. **Test Data Generator**: Erstellt Test-Daten für die anderen Beispiele\n\n**Features:**\n- Pull-based und Push-based Consumers\n- Acknowledgment Policies (Explicit, All, None)\n- Delivery Policies (New, All, Last, By Sequence, By Time)\n- Batch Processing\n- Flow Control\n- Replay Capabilities\n- Error Handling\n- Connection Pooling",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]
+
+
+
+
+
+

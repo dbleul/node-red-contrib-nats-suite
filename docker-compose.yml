@@ -1,0 +1,36 @@
+services:
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered-dev
+    user: "1000:1000"  # Node-RED läuft als UID 1000
+    ports:
+      - '1880:1880'
+    volumes:
+      - ./:/data/node_modules/node-red-contrib-nats-suite
+      - ./examples:/data
+    environment:
+      - TZ=Europe/Berlin
+    depends_on:
+      - nats-server
+    restart: unless-stopped
+
+  nats-server:
+    image: nats:latest
+    container_name: nats-server-dev
+    ports:
+      - '4222:4222'  # NATS Client connections
+      - '1883:1883'  # MQTT connections
+      - '8222:8222'  # HTTP monitoring
+      - '6222:6222'  # Cluster routing
+    command:
+      - "-c"
+      - "/etc/nats/nats-server.conf"
+    volumes:
+      - ./config/nats-server.conf:/etc/nats/nats-server.conf:ro
+      - nats-data:/data           # Persistent JetStream storage
+    restart: unless-stopped
+
+volumes:
+  dev_data:
+  nats-data:
+ 

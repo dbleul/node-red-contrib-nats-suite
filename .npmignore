@@ -1,0 +1,80 @@
+# Version control
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+__tests__/
+coverage/
+*.test.js
+*.spec.js
+jest.config.js
+
+# Documentation (README.md and CHANGELOG.md are kept automatically)
+docs/
+
+# Build files
+*.tgz
+dist/
+build/
+*.map
+
+# Development configs
+.eslintrc*
+.prettierrc*
+tsconfig.json
+nodemon.json
+
+# Development tools
+Makefile
+docker-compose.yml
+.nvmrc
+.node-version
+
+# Examples - only keep flows.json and README.md
+examples/*
+!examples/flows.json
+!examples/README.md
+
+# CI/CD
+.gitlab-ci.yml
+.travis.yml
+.github/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+
+# Lock files (users should generate their own)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.*
+

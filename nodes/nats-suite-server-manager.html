@@ -1,0 +1,172 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-suite-server-manager', {
+    category: 'NATS Suite',
+    color: '#2FAF9C',
+    defaults: {
+      name: { value: "" },
+      serverType: { value: "embedded", required: true },
+      port: { value: 4222, required: true, validate: function(val) { return /^\d+$/.test(val) && parseInt(val) > 0 && parseInt(val) < 65536; } },
+      leafPort: { value: 7422, required: true, validate: function(val) { return /^\d+$/.test(val) && parseInt(val) > 0 && parseInt(val) < 65536; } },
+      enableJetStream: { value: false },
+      storeDir: { value: "" },
+      leafRemoteUrl: { value: "" },
+      leafRemoteUser: { value: "" },
+      leafRemotePass: { value: "" },
+      autoStart: { value: true },
+      debug: { value: false }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "nats-icon-white.png",
+    align: "left",
+    label: function() {
+      return this.name || "nats server manager";
+    },
+    paletteLabel: 'nats server manager',
+    labelStyle: function() {
+      return this.name ? "node_label_italic" : "";
+    },
+    oneditprepare: function() {
+      // Show/hide fields based on server type
+      const serverTypeField = $('#node-input-serverType');
+      const portField = $('#node-input-port').closest('.form-row');
+      const leafPortField = $('#node-input-leafPort').closest('.form-row');
+      const leafRemoteField = $('#node-input-leafRemoteUrl').closest('.form-row');
+      const leafUserField = $('#node-input-leafRemoteUser').closest('.form-row');
+      const leafPassField = $('#node-input-leafRemotePass').closest('.form-row');
+      const storeDirField = $('#node-input-storeDir').closest('.form-row');
+
+      function updateVisibility() {
+        const type = serverTypeField.val();
+        portField.toggle(type !== 'leaf');
+        leafPortField.toggle(type === 'leaf');
+        leafRemoteField.toggle(type === 'leaf');
+        leafUserField.toggle(type === 'leaf');
+        leafPassField.toggle(type === 'leaf');
+        storeDirField.toggle($('#node-input-enableJetStream').is(':checked'));
+      }
+
+      serverTypeField.on('change', updateVisibility);
+      $('#node-input-enableJetStream').on('change', updateVisibility);
+      updateVisibility();
+    }
+  });
+</script>
+
+<script type="text/html" data-template-name="nats-suite-server-manager">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  
+  <div class="form-row">
+    <label for="node-input-serverType"><i class="fa fa-server"></i> Server Typ</label>
+    <select id="node-input-serverType">
+      <option value="embedded">Embedded (nats-memory-server)</option>
+      <option value="nats-server">NATS Server Prozess</option>
+      <option value="leaf">Leaf Node Server</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-port"><i class="fa fa-plug"></i> Port</label>
+    <input type="number" id="node-input-port" placeholder="4222" min="1" max="65535">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-leafPort"><i class="fa fa-plug"></i> Leaf Node Port</label>
+    <input type="number" id="node-input-leafPort" placeholder="7422" min="1" max="65535">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-leafRemoteUrl"><i class="fa fa-link"></i> Remote NATS Server URL</label>
+    <input type="text" id="node-input-leafRemoteUrl" placeholder="nats://remote-server:4222">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-leafRemoteUser"><i class="fa fa-user"></i> Remote Benutzername (optional)</label>
+    <input type="text" id="node-input-leafRemoteUser" placeholder="Benutzername">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-leafRemotePass"><i class="fa fa-lock"></i> Remote Passwort (optional)</label>
+    <input type="password" id="node-input-leafRemotePass" placeholder="Passwort">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-enableJetStream">
+      <input type="checkbox" id="node-input-enableJetStream" style="display: inline-block; width: auto; vertical-align: top;">
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">JetStream aktivieren</span>
+    </label>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-storeDir"><i class="fa fa-folder"></i> JetStream Store Verzeichnis (optional)</label>
+    <input type="text" id="node-input-storeDir" placeholder="/tmp/nats-jetstream">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-autoStart">
+      <input type="checkbox" id="node-input-autoStart" style="display: inline-block; width: auto; vertical-align: top;" checked>
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Automatisch beim Start</span>
+    </label>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-debug">
+      <input type="checkbox" id="node-input-debug" style="display: inline-block; width: auto; vertical-align: top;">
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Debug Logging</span>
+    </label>
+  </div>
+</script>
+
+<script type="text/html" data-help-name="nats-suite-server-manager">
+  <p>Startet und verwaltet einen NATS Server direkt in Node-RED.</p>
+
+  <h3>Server Typen</h3>
+  
+  <h4>Embedded Server (nats-memory-server)</h4>
+  <p>Verwendet einen In-Memory NATS Server für Tests und Entwicklung. Erfordert <code>nats-memory-server</code> Paket.</p>
+  <p><strong>Installation:</strong></p>
+  <pre><code>npm install nats-memory-server</code></pre>
+
+  <h4>NATS Server Prozess</h4>
+  <p>Startet den offiziellen NATS Server als separaten Prozess. Erfordert, dass <code>nats-server</code> im PATH verfügbar ist.</p>
+  <p><strong>Installation:</strong></p>
+  <pre><code># Linux/Mac
+brew install nats-server
+# oder
+go install github.com/nats-io/nats-server/v2@latest
+
+# Windows
+# Download von https://github.com/nats-io/nats-server/releases</code></pre>
+
+  <h4>Leaf Node Server</h4>
+  <p>Startet einen Leaf Node Server, der sich mit einem entfernten NATS Cluster verbindet.</p>
+
+  <h3>Eingabe</h3>
+  <p>Steuern Sie den Server mit Nachrichten:</p>
+  <ul>
+    <li><code>msg.payload.command = "start"</code> - Server starten</li>
+    <li><code>msg.payload.command = "stop"</code> - Server stoppen</li>
+    <li><code>msg.payload.command = "restart"</code> - Server neu starten</li>
+    <li><code>msg.payload.command = "status"</code> - Status abfragen</li>
+    <li><code>msg.payload.command = "toggle"</code> - Start/Stop umschalten (Standard)</li>
+  </ul>
+
+  <h3>Ausgabe</h3>
+  <p>Sendet Status-Ereignisse:</p>
+  <ul>
+    <li><code>msg.topic = "server.started"</code> - Server wurde gestartet</li>
+    <li><code>msg.topic = "server.stopped"</code> - Server wurde gestoppt</li>
+    <li><code>msg.topic = "server.status"</code> - Status-Informationen</li>
+  </ul>
+  <p><code>msg.payload</code> enthält Details wie Port, URL, PID, etc.</p>
+
+  <h3>Verwendung</h3>
+  <p>Nach dem Start können Sie sich mit anderen NATS-Suite-Knoten verbinden:</p>
+  <pre><code>nats://localhost:4222</code></pre>
+  <p>Für Leaf Node:</p>
+  <pre><code>nats://localhost:7422</code></pre>
+</script>
+

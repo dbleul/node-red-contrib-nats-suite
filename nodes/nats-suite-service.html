@@ -1,0 +1,288 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-suite-service', {
+    category: 'NATS Suite',
+    color: '#2FAF9C',
+    defaults: {
+      name: {
+        value: '',
+      },
+      server: {
+        value: '',
+        type: 'nats-suite-server',
+        required: true
+      },
+      mode: {
+        value: 'discover',
+        required: true
+      },
+      serviceName: {
+        value: 'my-service'
+      },
+      serviceVersion: {
+        value: '1.0.0'
+      },
+      serviceDescription: {
+        value: ''
+      },
+      endpoint: {
+        value: 'process'
+      },
+      endpointSubject: {
+        value: ''
+      },
+      queueGroup: {
+        value: ''
+      },
+      metadata: {
+        value: ''
+      },
+      autoStart: {
+        value: true
+      },
+      debug: {
+        value: false
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'nats-icon-white.png',
+    align: 'left',
+    label: function () {
+      const mode = this.mode || 'discover';
+      if (mode === 'service') {
+        return this.name || `service (${this.serviceName || 'service'})`;
+      }
+      return this.name || `service ${mode}`;
+    },
+    paletteLabel: 'nats service',
+    oneditprepare: function() {
+      // Show/hide fields based on mode
+      $('#node-input-mode').on('change', function() {
+        const mode = $(this).val();
+        
+        if (mode === 'service') {
+          $('#service-config').show();
+          $('#discovery-config').hide();
+        } else {
+          $('#service-config').hide();
+          $('#discovery-config').show();
+        }
+      });
+      $('#node-input-mode').trigger('change');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-suite-service">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-server"><i class="fa fa-server"></i> NATS Server</label>
+      <input type="text" id="node-input-server">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-mode"><i class="fa fa-cog"></i> Operation Mode</label>
+      <select id="node-input-mode" style="width:70%">
+          <option value="discover">Service Discovery</option>
+          <option value="stats">Service Stats</option>
+          <option value="ping">Ping Services</option>
+          <option value="service">Run Service</option>
+      </select>
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Discovery: Find services | Stats: Get service stats | Service: Run a service endpoint
+      </div>
+  </div>
+  
+  <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+  
+  <div id="discovery-config">
+      <div class="form-row">
+          <label for="node-input-serviceName"><i class="fa fa-search"></i> Service Name Filter</label>
+          <input type="text" id="node-input-serviceName" placeholder="my-service (or * for all)" style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Use * to discover all services or specify a service name
+          </div>
+      </div>
+  </div>
+  
+  <div id="service-config" style="display: none;">
+      <h4><i class="fa fa-cogs"></i> Service Configuration</h4>
+      
+      <div class="form-row">
+          <label for="node-input-serviceName"><i class="fa fa-tag"></i> Service Name</label>
+          <input type="text" id="node-input-serviceName" placeholder="my-service" style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Unique service identifier (e.g., "auth-service")
+          </div>
+      </div>
+      
+      <div class="form-row">
+          <label for="node-input-serviceVersion"><i class="fa fa-code-fork"></i> Version</label>
+          <input type="text" id="node-input-serviceVersion" placeholder="1.0.0" style="width: 200px;">
+      </div>
+      
+      <div class="form-row">
+          <label for="node-input-serviceDescription"><i class="fa fa-info-circle"></i> Description</label>
+          <input type="text" id="node-input-serviceDescription" placeholder="Service description" style="width: 70%;">
+      </div>
+      
+      <h4><i class="fa fa-link"></i> Endpoint Configuration</h4>
+      
+      <div class="form-row">
+          <label for="node-input-endpoint"><i class="fa fa-plug"></i> Endpoint Name</label>
+          <input type="text" id="node-input-endpoint" placeholder="process" style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Endpoint name (e.g., "process", "calculate", "validate")
+          </div>
+      </div>
+      
+      <div class="form-row">
+          <label for="node-input-endpointSubject"><i class="fa fa-paper-plane"></i> Subject (optional)</label>
+          <input type="text" id="node-input-endpointSubject" placeholder="my-service.process" style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Override default subject (default: serviceName.endpoint)
+          </div>
+      </div>
+      
+      <div class="form-row">
+          <label for="node-input-queueGroup"><i class="fa fa-users"></i> Queue Group</label>
+          <input type="text" id="node-input-queueGroup" placeholder="my-service" style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Queue group for load balancing (default: service name)
+          </div>
+      </div>
+      
+      <h4><i class="fa fa-info"></i> Metadata & Options</h4>
+      
+      <div class="form-row">
+          <label for="node-input-metadata"><i class="fa fa-code"></i> Metadata (JSON)</label>
+          <input type="text" id="node-input-metadata" placeholder='{"region": "eu", "env": "prod"}' style="width: 70%;">
+          <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+              Optional metadata as JSON object
+          </div>
+      </div>
+      
+      <div class="form-row">
+          <label for="node-input-autoStart"><i class="fa fa-play"></i> Auto-Start</label>
+          <input type="checkbox" id="node-input-autoStart" checked style="vertical-align: middle;">
+          <span style="margin-left: 10px; color: #999;">Start service automatically on deploy</span>
+      </div>
+  </div>
+  
+  <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+  
+  <div class="form-row">
+      <label for="node-input-debug"><i class="fa fa-bug"></i> Debug Logging</label>
+      <input type="checkbox" id="node-input-debug" style="vertical-align: middle;">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-suite-service">
+  <p>NATS Service API for microservice discovery, stats, and service endpoints.</p>
+
+  <h3>Operation Modes</h3>
+  
+  <h4>Service Discovery</h4>
+  <p>Discover available NATS services on the network.</p>
+  <ul>
+    <li><strong>Output:</strong> Array of discovered services with name, version, and metadata</li>
+    <li><strong>Use case:</strong> Find available services for dynamic routing</li>
+  </ul>
+  
+  <h4>Service Stats</h4>
+  <p>Get statistics for running services.</p>
+  <ul>
+    <li><strong>Output:</strong> Service statistics including request counts, endpoints, and performance metrics</li>
+    <li><strong>Use case:</strong> Monitoring and health checks</li>
+  </ul>
+  
+  <h4>Ping Services</h4>
+  <p>Ping specific services to check availability.</p>
+  <ul>
+    <li><strong>Input:</strong> Service name to ping</li>
+    <li><strong>Output:</strong> Ping responses from available service instances</li>
+  </ul>
+  
+  <h4>Run Service</h4>
+  <p>Run a NATS service endpoint that responds to requests.</p>
+  <ul>
+    <li><strong>Configuration:</strong> Service name, version, endpoint name</li>
+    <li><strong>Input:</strong> Service requests from other nodes/services</li>
+    <li><strong>Output:</strong> Request data for processing (use msg.respond() to send response)</li>
+  </ul>
+
+  <h3>Service Mode Usage</h3>
+  
+  <h4>Processing Requests</h4>
+  <p>When running in service mode, incoming requests are sent to the output. Process the request and use the provided functions to respond:</p>
+  
+  <pre><code>// In a Function node connected to the service output:
+// msg.payload contains the request data
+// msg.respond(response) - Send success response
+// msg.respondError(error, code) - Send error response
+
+// Example: Echo service
+msg.respond({
+  echo: msg.payload,
+  timestamp: Date.now()
+});
+
+// Example: Error handling
+if (!msg.payload.value) {
+  msg.respondError('Missing required field: value', 'VALIDATION_ERROR');
+  return null; // Don't send to next node
+}
+
+// Process and respond
+const result = processData(msg.payload);
+msg.respond(result);
+</code></pre>
+
+  <h3>Discovery Examples</h3>
+  
+  <h4>Discover All Services</h4>
+  <pre><code>// Configure node:
+// - Mode: Service Discovery
+// - Service Name: *
+
+// Send any message to trigger discovery
+msg.payload = {};
+
+// Output:
+msg.payload = [
+  {
+    name: "auth-service",
+    version: "1.0.0",
+    id: "abc123",
+    metadata: { region: "eu" }
+  },
+  {
+    name: "data-processor",
+    version: "2.1.0",
+    id: "def456",
+    metadata: { env: "prod" }
+  }
+];
+</code></pre>
+
+  <h3>Service Endpoints</h3>
+  <ul>
+    <li><strong>Auto-Start:</strong> Services start automatically on deploy</li>
+    <li><strong>Load Balancing:</strong> Multiple service instances automatically load balance via queue groups</li>
+    <li><strong>Request-Reply:</strong> Built-in request-reply pattern for synchronous communication</li>
+  </ul>
+
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Service Discovery:</strong> Find and list available services</li>
+    <li><strong>Service Stats:</strong> Monitor service health and performance</li>
+    <li><strong>Service Endpoints:</strong> Create microservice endpoints with automatic load balancing</li>
+    <li><strong>Metadata Support:</strong> Add custom metadata to services for filtering and routing</li>
+    <li><strong>Queue Groups:</strong> Automatic load balancing across service instances</li>
+  </ul>
+</script>
+

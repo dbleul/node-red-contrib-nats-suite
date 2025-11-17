@@ -1,0 +1,286 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-suite-object-put', {
+    category: 'NATS Suite',
+    color: '#2FAF9C',
+    icon: 'nats-icon-white.png',
+    align: 'right',
+    defaults: {
+      name: { value: "" },
+      server: { 
+        value: "",
+        type: 'nats-suite-server',
+        required: true
+      },
+      bucket: { value: "" },
+      bucketConfig: { 
+        value: "",
+        required: false
+      },
+      objectName: { value: "" },
+      nameFrom: { value: "msg" },
+      dataFrom: { value: "payload" },
+      contentType: { value: "" },
+      description: { value: "" },
+      maxAge: { value: 0 },
+      maxBytes: { value: 0 },
+      storage: { value: "file" },
+      replicas: { value: 1 },
+      compression: { value: false },
+      debug: { value: false },
+      operation: { value: 'put' }
+    },
+    inputs: 1,
+    outputs: 1,
+    label: function () {
+      return this.name || "object put";
+    },
+    paletteLabel: 'nats object put',
+    oneditprepare: function() {
+      // Show/hide based on operation
+      $('#node-input-operation').on('change', function() {
+        const op = $(this).val();
+        
+        // Bucket management operations
+        if (['bucket-create', 'bucket-info', 'bucket-delete', 'bucket-list'].includes(op)) {
+          $('#object-config').hide();
+          $('#bucket-mgmt-config').show();
+          if (op === 'bucket-create') {
+            $('#bucket-create-settings').show();
+          } else {
+            $('#bucket-create-settings').hide();
+          }
+        } else {
+          $('#object-config').show();
+          $('#bucket-mgmt-config').hide();
+        }
+      });
+      
+      // Show/hide object name input
+      $('#node-input-nameFrom').on('change', function() {
+        if ($(this).val() === 'config') {
+          $('#object-name-row').show();
+        } else {
+          $('#object-name-row').hide();
+        }
+      });
+      
+      // Show/hide file path input
+      $('#node-input-dataFrom').on('change', function() {
+        if ($(this).val() === 'file') {
+          $('#file-path-row').show();
+        } else {
+          $('#file-path-row').hide();
+        }
+      });
+      
+      // Trigger initial state
+      $('#node-input-operation').trigger('change');
+      $('#node-input-nameFrom').trigger('change');
+      $('#node-input-dataFrom').trigger('change');
+      
+      // Show/hide bucket direct config based on bucketConfig
+      $('#node-input-bucketConfig').on('change', function() {
+        if ($(this).val()) {
+          $('#bucket-direct-config').hide();
+          $('#bucket-settings').hide();
+        } else {
+          $('#bucket-direct-config').show();
+          $('#bucket-settings').show();
+        }
+      });
+      $('#node-input-bucketConfig').trigger('change');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-suite-object-put">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Object Put">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-server"><i class="fa fa-server"></i> NATS Server</label>
+      <input type="text" id="node-input-server">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-bucketConfig"><i class="fa fa-database"></i> Bucket Config (optional)</label>
+      <input type="text" id="node-input-bucketConfig">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Optional: Use bucket config node OR configure bucket directly below
+      </div>
+  </div>
+  
+  <div class="form-row" id="bucket-direct-config">
+      <label for="node-input-bucket"><i class="fa fa-database"></i> Bucket Name</label>
+      <input type="text" id="node-input-bucket" placeholder="my-bucket">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Bucket name (if not using bucket config node)
+      </div>
+  </div>
+  
+  <div class="form-row" id="bucket-settings" style="display: none;">
+      <label for="node-input-description"><i class="fa fa-info-circle"></i> Description</label>
+      <input type="text" id="node-input-description" placeholder="Optional description">
+      
+      <label for="node-input-maxAge"><i class="fa fa-clock-o"></i> Max Age (seconds)</label>
+      <input type="number" id="node-input-maxAge" placeholder="0" min="0" style="width: 100px;">
+      
+      <label for="node-input-maxBytes"><i class="fa fa-hdd-o"></i> Max Bytes</label>
+      <input type="number" id="node-input-maxBytes" placeholder="0" min="0" style="width: 150px;">
+      
+      <label for="node-input-storage"><i class="fa fa-database"></i> Storage</label>
+      <select id="node-input-storage" style="width:70%">
+          <option value="file">File</option>
+          <option value="memory">Memory</option>
+      </select>
+      
+      <label for="node-input-replicas"><i class="fa fa-copy"></i> Replicas</label>
+      <input type="number" id="node-input-replicas" placeholder="1" min="1" max="5" style="width: 100px;">
+      
+      <label for="node-input-compression"><i class="fa fa-compress"></i> Compression</label>
+      <input type="checkbox" id="node-input-compression" style="vertical-align: middle;">
+  </div>
+  
+  <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+  
+  <div class="form-row">
+      <label for="node-input-operation"><i class="fa fa-cog"></i> Operation</label>
+      <select id="node-input-operation" style="width:70%">
+          <option value="put">Put Object</option>
+          <option value="delete">Delete Object</option>
+          <option value="bucket-create">Create Bucket</option>
+          <option value="bucket-info">Bucket Info</option>
+          <option value="bucket-delete">Delete Bucket</option>
+          <option value="bucket-list">List Buckets</option>
+      </select>
+  </div>
+  
+  <div id="object-config">
+  <div class="form-row">
+      <label for="node-input-nameFrom"><i class="fa fa-key"></i> Object Name From</label>
+      <select id="node-input-nameFrom" style="width:70%">
+          <option value="msg">msg.objectName / msg.name</option>
+          <option value="topic">msg.topic</option>
+          <option value="config">Configuration</option>
+      </select>
+  </div>
+  
+  <div class="form-row" id="object-name-row">
+      <label for="node-input-objectName"><i class="fa fa-file"></i> Object Name</label>
+      <input type="text" id="node-input-objectName" placeholder="my-object.txt">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Object name (when using config)
+      </div>
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-dataFrom"><i class="fa fa-database"></i> Data From</label>
+      <select id="node-input-dataFrom" style="width:70%">
+          <option value="payload">msg.payload</option>
+          <option value="buffer">msg.payload (as Buffer)</option>
+          <option value="file">File Path</option>
+      </select>
+  </div>
+  
+  <div class="form-row" id="file-path-row" style="display: none;">
+      <label for="node-input-filePath"><i class="fa fa-file-o"></i> File Path</label>
+      <input type="text" id="node-input-filePath" placeholder="/path/to/file">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Path to file to upload (can be overridden by msg.filePath)
+      </div>
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-contentType"><i class="fa fa-file-text-o"></i> Content Type</label>
+      <input type="text" id="node-input-contentType" placeholder="text/plain, image/png, application/json">
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Optional content type (can be overridden by msg.contentType)
+      </div>
+  </div>
+  
+  
+  <div class="form-row">
+      <label for="node-input-debug"><i class="fa fa-bug"></i> Debug</label>
+      <input type="checkbox" id="node-input-debug" style="vertical-align: middle;">
+      <span style="margin-left: 10px; color: #999;">Enable debug logging</span>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-suite-object-put">
+  <p>Uploads objects to NATS Object Store.</p>
+  
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>msg.payload</dt>
+    <dd>Data to upload (string, Buffer, or object)</dd>
+    
+    <dt>msg.objectName / msg.name</dt>
+    <dd>Object name (when nameFrom = "msg")</dd>
+    
+    <dt>msg.topic</dt>
+    <dd>Object name (when nameFrom = "topic")</dd>
+    
+    <dt>msg.contentType</dt>
+    <dd>Content type (e.g., "text/plain", "image/png")</dd>
+    
+    <dt>msg.metadata</dt>
+    <dd>Additional metadata object</dd>
+    
+    <dt>msg.filePath</dt>
+    <dd>File path (when dataFrom = "file")</dd>
+  </dl>
+  
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>msg.info</dt>
+    <dd>Object info (size, chunks, etc.)</dd>
+    
+    <dt>msg.objectName</dt>
+    <dd>Object name</dd>
+    
+    <dt>msg.size</dt>
+    <dd>Object size in bytes</dd>
+    
+    <dt>msg.chunks</dt>
+    <dd>Number of chunks</dd>
+  </dl>
+  
+  <h3>Usage</h3>
+  <p>Upload files or data to Object Store. Large files are automatically chunked.</p>
+</script>
+
+<script type="text/javascript">
+  $('#node-input-nameFrom').on('change', function() {
+    if ($(this).val() === 'config') {
+      $('#object-name-row').show();
+    } else {
+      $('#object-name-row').hide();
+    }
+  });
+  
+  $('#node-input-dataFrom').on('change', function() {
+    if ($(this).val() === 'file') {
+      $('#file-path-row').show();
+    } else {
+      $('#file-path-row').hide();
+    }
+  });
+  
+  $('#node-input-nameFrom').trigger('change');
+  $('#node-input-dataFrom').trigger('change');
+  
+  // Show/hide bucket direct config based on bucketConfig
+  $('#node-input-bucketConfig').on('change', function() {
+    if ($(this).val()) {
+      $('#bucket-direct-config').hide();
+      $('#bucket-settings').hide();
+    } else {
+      $('#bucket-direct-config').show();
+      $('#bucket-settings').show();
+    }
+  });
+  $('#node-input-bucketConfig').trigger('change');
+</script>
+

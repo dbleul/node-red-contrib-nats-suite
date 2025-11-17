@@ -1,0 +1,334 @@
+[
+  {
+    "id": "nats-suite-request-example",
+    "type": "tab",
+    "label": "NATS Request Examples",
+    "disabled": false,
+    "info": "Beispiele für NATS Request-Reply Pattern mit verschiedenen Szenarien"
+  },
+  {
+    "id": "nats-suite-server",
+    "type": "nats-suite-server",
+    "z": "nats-suite-request-example",
+    "name": "NATS Server",
+    "server": "localhost:4222",
+    "timeout": 10000,
+    "pingInterval": 30000,
+    "maxPingOut": 3,
+    "authMethod": "none",
+    "enableTLS": false,
+    "tlsRejectUnauthorized": true,
+    "tlsCaFile": "",
+    "tlsCertFile": "",
+    "tlsKeyFile": "",
+    "x": 200,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject-simple-request",
+    "type": "inject",
+    "z": "nats-suite-request-example",
+    "name": "Simple Request",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "service.status",
+    "payload": "{\"action\":\"get_status\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      ["nats-suite-request-simple"]
+    ]
+  },
+  {
+    "id": "nats-suite-request-simple",
+    "type": "nats-suite-request",
+    "z": "nats-suite-request-example",
+    "name": "Simple Request",
+    "server": "nats-suite-server",
+    "subject": "service.status",
+    "timeout": 5000,
+    "debug": true,
+    "x": 400,
+    "y": 200,
+    "wires": [
+      ["debug-simple-response"]
+    ]
+  },
+  {
+    "id": "debug-simple-response",
+    "type": "debug",
+    "z": "nats-suite-request-example",
+    "name": "Simple Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "inject-data-request",
+    "type": "inject",
+    "z": "nats-suite-request-example",
+    "name": "Data Request",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "data.query",
+    "payload": "{\"query\":\"SELECT * FROM sensors WHERE timestamp > {{$timestamp - 3600000}}\",\"limit\":10}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 300,
+    "wires": [
+      ["nats-suite-request-data"]
+    ]
+  },
+  {
+    "id": "nats-suite-request-data",
+    "type": "nats-suite-request",
+    "z": "nats-suite-request-example",
+    "name": "Data Request",
+    "server": "nats-suite-server",
+    "subject": "data.query",
+    "timeout": 10000,
+    "debug": true,
+    "x": 400,
+    "y": 300,
+    "wires": [
+      ["debug-data-response"]
+    ]
+  },
+  {
+    "id": "debug-data-response",
+    "type": "debug",
+    "z": "nats-suite-request-example",
+    "name": "Data Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "inject-timeout-request",
+    "type": "inject",
+    "z": "nats-suite-request-example",
+    "name": "Timeout Request",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "slow.service",
+    "payload": "{\"action\":\"slow_operation\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      ["nats-suite-request-timeout"]
+    ]
+  },
+  {
+    "id": "nats-suite-request-timeout",
+    "type": "nats-suite-request",
+    "z": "nats-suite-request-example",
+    "name": "Timeout Request",
+    "server": "nats-suite-server",
+    "subject": "slow.service",
+    "timeout": 2000,
+    "debug": true,
+    "x": 400,
+    "y": 400,
+    "wires": [
+      ["debug-timeout-response"]
+    ]
+  },
+  {
+    "id": "debug-timeout-response",
+    "type": "debug",
+    "z": "nats-suite-request-example",
+    "name": "Timeout Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "inject-batch-request",
+    "type": "inject",
+    "z": "nats-suite-request-example",
+    "name": "Batch Request",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "1",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "batch.process",
+    "payload": "{\"items\":[1,2,3,4,5],\"action\":\"process_batch\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      ["nats-suite-request-batch"]
+    ]
+  },
+  {
+    "id": "nats-suite-request-batch",
+    "type": "nats-suite-request",
+    "z": "nats-suite-request-example",
+    "name": "Batch Request",
+    "server": "nats-suite-server",
+    "subject": "batch.process",
+    "timeout": 15000,
+    "debug": true,
+    "x": 400,
+    "y": 500,
+    "wires": [
+      ["debug-batch-response"]
+    ]
+  },
+  {
+    "id": "debug-batch-response",
+    "type": "debug",
+    "z": "nats-suite-request-example",
+    "name": "Batch Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "inject-error-request",
+    "type": "inject",
+    "z": "nats-suite-request-example",
+    "name": "Error Request",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "error.service",
+    "payload": "{\"action\":\"trigger_error\"}",
+    "payloadType": "json",
+    "x": 150,
+    "y": 600,
+    "wires": [
+      ["nats-suite-request-error"]
+    ]
+  },
+  {
+    "id": "nats-suite-request-error",
+    "type": "nats-suite-request",
+    "z": "nats-suite-request-example",
+    "name": "Error Request",
+    "server": "nats-suite-server",
+    "subject": "error.service",
+    "timeout": 5000,
+    "debug": true,
+    "x": 400,
+    "y": 600,
+    "wires": [
+      ["debug-error-response"]
+    ]
+  },
+  {
+    "id": "debug-error-response",
+    "type": "debug",
+    "z": "nats-suite-request-example",
+    "name": "Error Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "comment-1",
+    "type": "comment",
+    "z": "nats-suite-request-example",
+    "name": "NATS Request Beispiele",
+    "info": "Verschiedene NATS Request-Reply Szenarien:\n\n1. **Simple Request**: Einfache Anfrage mit kurzer Antwort\n2. **Data Request**: Datenbankabfrage mit längerer Antwortzeit\n3. **Timeout Request**: Request mit kurzem Timeout (zeigt Timeout-Verhalten)\n4. **Batch Request**: Batch-Verarbeitung mit vielen Daten\n5. **Error Request**: Request an nicht existierenden Service (zeigt Error-Handling)\n\n**Features:**\n- Request-Reply Pattern\n- Timeout-Handling\n- Error-Handling\n- Debug-Logging\n- JSON Payload Support\n- Connection Pooling",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]
+

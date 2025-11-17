@@ -1,0 +1,50 @@
+{
+  "name": "node-red-contrib-nats-suite",
+  "version": "1.0.0",
+  "description": "Ein umfassendes Node-RED Modul für NATS mit allen Funktionen (Publish/Subscribe, Request/Reply, JetStream)",
+  "keywords": [
+    "node-red",
+    "nats",
+    "messaging",
+    "pubsub",
+    "jetstream"
+  ],
+  "node-red": {
+    "version": ">=3.0.0",
+    "nodes": {
+      "nats-suite-server": "nodes/nats-suite-server.js",
+      "nats-suite-publish": "nodes/nats-suite-publish.js",
+      "nats-suite-subscribe": "nodes/nats-suite-subscribe.js",
+      "nats-suite-request": "nodes/nats-suite-request.js",
+      "nats-suite-reply": "nodes/nats-suite-reply.js",
+      "nats-suite-health": "nodes/nats-suite-health.js",
+      "nats-suite-kv-get": "nodes/nats-suite-kv-get.js",
+      "nats-suite-kv-put": "nodes/nats-suite-kv-put.js",
+      "nats-suite-stream-publisher": "nodes/nats-suite-stream-publisher.js",
+      "nats-suite-stream-consumer": "nodes/nats-suite-stream-consumer.js",
+      "nats-suite-object-put": "nodes/nats-suite-object-put.js",
+      "nats-suite-object-get": "nodes/nats-suite-object-get.js",
+      "nats-suite-stats": "nodes/nats-suite-stats.js",
+      "nats-suite-server-manager": "nodes/nats-suite-server-manager.js",
+      "nats-suite-service": "nodes/nats-suite-service.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "blanpa",
+  "license": "MIT",
+  "dependencies": {
+    "nats": "^2.20.0"
+  },
+  "optionalDependencies": {
+    "nats-memory-server": "^2.0.21"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}

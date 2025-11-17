@@ -1,0 +1,314 @@
+[
+  {
+    "id": "nats-suite-health-example",
+    "type": "tab",
+    "label": "NATS Health Examples",
+    "disabled": false,
+    "info": "Beispiele für NATS Health Monitoring mit verschiedenen Konfigurationen"
+  },
+  {
+    "id": "nats-suite-server",
+    "type": "nats-suite-server",
+    "z": "nats-suite-health-example",
+    "name": "NATS Server",
+    "server": "localhost:4222",
+    "timeout": 10000,
+    "pingInterval": 30000,
+    "maxPingOut": 3,
+    "authMethod": "none",
+    "enableTLS": false,
+    "tlsRejectUnauthorized": true,
+    "tlsCaFile": "",
+    "tlsCertFile": "",
+    "tlsKeyFile": "",
+    "x": 200,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "inject-health-check",
+    "type": "inject",
+    "z": "nats-suite-health-example",
+    "name": "Health Check",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "10",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      ["nats-suite-health-basic"]
+    ]
+  },
+  {
+    "id": "nats-suite-health-basic",
+    "type": "nats-suite-health",
+    "z": "nats-suite-health-example",
+    "name": "Basic Health Check",
+    "server": "nats-suite-server",
+    "enableThroughputTest": true,
+    "throughputThreshold": 1000,
+    "enableRequestResponseTest": true,
+    "enableConnectionTest": true,
+    "x": 400,
+    "y": 200,
+    "wires": [
+      ["debug-health-basic"]
+    ]
+  },
+  {
+    "id": "debug-health-basic",
+    "type": "debug",
+    "z": "nats-suite-health-example",
+    "name": "Basic Health Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "inject-health-detailed",
+    "type": "inject",
+    "z": "nats-suite-health-example",
+    "name": "Detailed Health Check",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 300,
+    "wires": [
+      ["nats-suite-health-detailed"]
+    ]
+  },
+  {
+    "id": "nats-suite-health-detailed",
+    "type": "nats-suite-health",
+    "z": "nats-suite-health-example",
+    "name": "Detailed Health Check",
+    "server": "nats-suite-server",
+    "enableThroughputTest": true,
+    "throughputThreshold": 500,
+    "enableRequestResponseTest": true,
+    "enableConnectionTest": true,
+    "x": 400,
+    "y": 300,
+    "wires": [
+      ["debug-health-detailed"]
+    ]
+  },
+  {
+    "id": "debug-health-detailed",
+    "type": "debug",
+    "z": "nats-suite-health-example",
+    "name": "Detailed Health Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "inject-health-minimal",
+    "type": "inject",
+    "z": "nats-suite-health-example",
+    "name": "Minimal Health Check",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "5",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 400,
+    "wires": [
+      ["nats-suite-health-minimal"]
+    ]
+  },
+  {
+    "id": "nats-suite-health-minimal",
+    "type": "nats-suite-health",
+    "z": "nats-suite-health-example",
+    "name": "Minimal Health Check",
+    "server": "nats-suite-server",
+    "enableThroughputTest": false,
+    "throughputThreshold": 1000,
+    "enableRequestResponseTest": false,
+    "enableConnectionTest": true,
+    "x": 400,
+    "y": 400,
+    "wires": [
+      ["debug-health-minimal"]
+    ]
+  },
+  {
+    "id": "debug-health-minimal",
+    "type": "debug",
+    "z": "nats-suite-health-example",
+    "name": "Minimal Health Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "inject-health-stress",
+    "type": "inject",
+    "z": "nats-suite-health-example",
+    "name": "Stress Test Health Check",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "60",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 500,
+    "wires": [
+      ["nats-suite-health-stress"]
+    ]
+  },
+  {
+    "id": "nats-suite-health-stress",
+    "type": "nats-suite-health",
+    "z": "nats-suite-health-example",
+    "name": "Stress Test Health Check",
+    "server": "nats-suite-server",
+    "enableThroughputTest": true,
+    "throughputThreshold": 10000,
+    "enableRequestResponseTest": true,
+    "enableConnectionTest": true,
+    "x": 400,
+    "y": 500,
+    "wires": [
+      ["debug-health-stress"]
+    ]
+  },
+  {
+    "id": "debug-health-stress",
+    "type": "debug",
+    "z": "nats-suite-health-example",
+    "name": "Stress Test Health Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 500,
+    "wires": []
+  },
+  {
+    "id": "inject-health-alert",
+    "type": "inject",
+    "z": "nats-suite-health-example",
+    "name": "Alert Health Check",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "15",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 600,
+    "wires": [
+      ["nats-suite-health-alert"]
+    ]
+  },
+  {
+    "id": "nats-suite-health-alert",
+    "type": "nats-suite-health",
+    "z": "nats-suite-health-example",
+    "name": "Alert Health Check",
+    "server": "nats-suite-server",
+    "enableThroughputTest": true,
+    "throughputThreshold": 100,
+    "enableRequestResponseTest": true,
+    "enableConnectionTest": true,
+    "x": 400,
+    "y": 600,
+    "wires": [
+      ["debug-health-alert"]
+    ]
+  },
+  {
+    "id": "debug-health-alert",
+    "type": "debug",
+    "z": "nats-suite-health-example",
+    "name": "Alert Health Debug",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 600,
+    "y": 600,
+    "wires": []
+  },
+  {
+    "id": "comment-1",
+    "type": "comment",
+    "z": "nats-suite-health-example",
+    "name": "NATS Health Beispiele",
+    "info": "Verschiedene NATS Health Monitoring Szenarien:\n\n1. **Basic Health Check**: Standard Health Check alle 10s\n2. **Detailed Health Check**: Detaillierte Checks alle 30s\n3. **Minimal Health Check**: Nur Connection Test alle 5s\n4. **Stress Test Health Check**: Hohe Thresholds für Performance-Tests\n5. **Alert Health Check**: Niedrige Thresholds für Alerts\n\n**Features:**\n- Connection Status Monitoring\n- Throughput Testing\n- Request-Response Testing\n- Performance Metrics\n- Alert Thresholds\n- Debug Logging\n- Connection Pooling",
+    "x": 200,
+    "y": 40,
+    "wires": []
+  }
+]
+

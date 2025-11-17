@@ -1,0 +1,62 @@
+<script type="text/javascript">
+  RED.nodes.registerType('nats-suite-stats', {
+    category: 'NATS Suite',
+    color: '#2FAF9C',
+    icon: 'nats-icon-white.png',
+    align: 'left',
+    defaults: {
+      name: { value: "" },
+      server: { 
+        value: "",
+        type: 'nats-suite-server',
+        required: true
+      },
+      statsType: { value: "server" }
+    },
+    label: function () {
+      return this.name || `stats (${this.statsType || 'server'})`;
+    },
+    paletteLabel: 'nats stats',
+  });
+</script>
+
+<script type="text/x-red" data-template-name="nats-suite-stats">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Stats">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-server"><i class="fa fa-server"></i> NATS Server</label>
+      <input type="text" id="node-input-server">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-statsType"><i class="fa fa-bar-chart"></i> Stats Type</label>
+      <select id="node-input-statsType" style="width:70%">
+          <option value="server">Server Stats</option>
+          <option value="jetstream">JetStream Stats</option>
+          <option value="connections">Connection Stats</option>
+          <option value="all">All Stats</option>
+      </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="nats-suite-stats">
+  <p>Retrieves detailed statistics from NATS server.</p>
+  
+  <h3>Stats Types</h3>
+  <ul>
+    <li><strong>Server</strong>: Connection statistics (messages, bytes, reconnects)</li>
+    <li><strong>JetStream</strong>: JetStream account information</li>
+    <li><strong>Connections</strong>: Server connection information</li>
+    <li><strong>All</strong>: All statistics combined</li>
+  </ul>
+  
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>msg.statsType</dt>
+    <dd>Stats type to retrieve (overrides config)</dd>
+  </dl>
+</script>
+
