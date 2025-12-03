@@ -48,17 +48,18 @@ module.exports = function (RED) {
 
     let subscription = null;
     let subscriptionIterator = null; // For Async Iterator cleanup
-    let subject = '';
+    let currentSubject = ''; // Current active subscription subject
+    let baseSubject = ''; // Base subject from config (fallback)
     let connectionTimeout = null;
     let connectionStartTime = null;
+    let queueGroup = null; // Queue group for load balancing
 
-    // Get subject from config
-    subject = config.datapointid;
+    // Get base subject from config (used as fallback if no dynamic subject provided)
+    baseSubject = config.datapointid || '';
     
-    if (!subject) {
-      node.error('No subject specified. Please configure a NATS subject.');
-      setStatusRed();
-      return;
+    // Initialize with base subject if available
+    if (baseSubject) {
+      currentSubject = baseSubject;
     }
     
     // Parse mode
@@ -84,7 +85,10 @@ module.exports = function (RED) {
           }
           
           setStatusGreen();
-          setupSubscription();
+          // Only setup subscription if we have a subject (from config or previous input)
+          if (currentSubject || baseSubject) {
+            setupSubscription();
+          }
           break;
         case 'disconnected':
           // Clear connection timeout
@@ -305,20 +309,32 @@ module.exports = function (RED) {
           name: err.name || 'Error',
         };
         // Safe error reporting with fallback
-        node.error(cleanError, { 
-          topic: subject, 
-          rawData: msg?.data ? String(msg.data) : 'N/A',
-          errorContext: 'processMessage'
-        });
+              node.error(cleanError, { 
+                topic: currentSubject || baseSubject, 
+                rawData: msg?.data ? String(msg.data) : 'N/A',
+                errorContext: 'processMessage'
+              });
       }
     };
 
-    const setupSubscription = async () => {
+    const setupSubscription = async (newSubject = null, newQueueGroup = null) => {
       try {
         const natsnc = await this.config.getConnection();
         
-        // Cleanup old subscription
-        if (subscription) {
+        // Determine subject to use
+        const targetSubject = newSubject || currentSubject || baseSubject;
+        
+        if (!targetSubject) {
+          node.error('No subject specified. Please configure a NATS subject or provide msg.topic/msg.subject.');
+          setStatusRed();
+          return;
+        }
+        
+        // Determine queue group
+        const targetQueueGroup = newQueueGroup !== null ? newQueueGroup : queueGroup;
+        
+        // Cleanup old subscription if subject or queue group changed
+        if (subscription && (targetSubject !== currentSubject || targetQueueGroup !== queueGroup)) {
           subscription.unsubscribe();
           subscription = null;
         }
@@ -328,8 +344,20 @@ module.exports = function (RED) {
           subscriptionIterator = null;
         }
         
+        // Update current subject and queue group
+        currentSubject = targetSubject;
+        queueGroup = targetQueueGroup;
+        
         // New subscription with modern Async Iterator API
-        subscription = natsnc.subscribe(subject);
+        if (targetQueueGroup) {
+          // Subscribe with queue group for load balancing
+          subscription = natsnc.subscribe(targetSubject, { queue: targetQueueGroup });
+          node.log(`Subscribed to "${targetSubject}" with queue group "${targetQueueGroup}"`);
+        } else {
+          // Regular subscription without queue group
+          subscription = natsnc.subscribe(targetSubject);
+          node.log(`Subscribed to "${targetSubject}"`);
+        }
         
         // Async iterator for message processing
         subscriptionIterator = (async () => {
@@ -345,7 +373,7 @@ module.exports = function (RED) {
                 code: err.code,
                 name: err.name,
               };
-              node.error(cleanError, { topic: subject });
+              node.error(cleanError, { topic: currentSubject });
             }
           }
         })();
@@ -356,9 +384,46 @@ module.exports = function (RED) {
           code: err.code,
           name: err.name,
         };
-        node.error(cleanError, { topic: subject });
+        node.error(cleanError, { topic: currentSubject || baseSubject });
       }
     };
+    
+    // Input handler for dynamic subscription changes
+    node.on('input', async (msg) => {
+      try {
+        // Check for dynamic subject in msg properties
+        const dynamicSubject = msg.topic || msg.subject || null;
+        const dynamicQueueGroup = msg.queueGroup || msg.queue || null;
+        
+        // Only update subscription if subject or queue group changed
+        if (dynamicSubject || dynamicQueueGroup !== null) {
+          try {
+            const natsnc = await this.config.getConnection();
+            
+            // Check if connection is ready
+            if (!natsnc || natsnc.isClosed()) {
+              node.warn('NATS connection not ready. Subscription change will be applied when connected.');
+              return;
+            }
+            
+            // Update subscription
+            await setupSubscription(dynamicSubject, dynamicQueueGroup);
+          } catch (err) {
+            node.warn(`Cannot update subscription: ${err.message}. Will retry when connected.`);
+          }
+        }
+        // If no dynamic properties, node continues with existing subscription
+        // This allows the node to work with static config only
+        
+      } catch (err) {
+        const cleanError = {
+          message: err.message || 'Error handling input message',
+          code: err.code || 'INPUT_ERROR',
+          name: err.name || 'Error',
+        };
+        node.error(cleanError);
+      }
+    });
 
     // on node close
     node.on('close', function (done) {

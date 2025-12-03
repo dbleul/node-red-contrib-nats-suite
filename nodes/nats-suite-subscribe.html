@@ -22,7 +22,7 @@
         value: 'subject',
       },
     },
-    inputs: 0,
+    inputs: 1,
     outputs: 1,
     icon: 'nats-icon-white.png',
     align: 'left',
@@ -62,7 +62,8 @@
       <label for="node-input-datapointid"><i class="fa fa-exchange"></i> NATS Subject</label>
       <input type="text" id="node-input-datapointid" placeholder="e.g. sensor.temperature or app.events.>">
       <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
-          Supports wildcards: * (single level), > (multi-level)
+          Supports wildcards: * (single level), > (multi-level)<br>
+          Can be overridden via msg.topic or msg.subject (dynamic subscription)
       </div>
   </div>
   <div class="form-row">
@@ -73,11 +74,31 @@
           <option value="name">Datapoint Name</option>
           <option value="datatype">Data Type</option>
       </select>
+      <div style="margin-top: 5px; color: #999; font-size: 11px; margin-left: 110px;">
+          Select what value to use for msg.topic in output messages
+      </div>
   </div>
 </script>
 
 <script type="text/x-red" data-help-name="nats-suite-subscribe">
   <p>Subscribes to messages from the nats-suite platform using NATS.</p>
+
+  <h3>Input (Dynamic Subscription)</h3>
+  <p>You can dynamically change the subscription subject and queue group via input messages:</p>
+  <dl class="message-properties">
+    <dt>msg.topic <span class="property-type">string</span></dt>
+    <dd>Dynamic NATS subject to subscribe to. Overrides the configured subject.</dd>
+    
+    <dt>msg.subject <span class="property-type">string</span></dt>
+    <dd>Alternative property for dynamic NATS subject (same as msg.topic).</dd>
+    
+    <dt>msg.queueGroup <span class="property-type">string</span></dt>
+    <dd>Queue group name for load balancing. Multiple subscribers with the same queue group will share messages.</dd>
+    
+    <dt>msg.queue <span class="property-type">string</span></dt>
+    <dd>Alternative property for queue group (same as msg.queueGroup).</dd>
+  </dl>
+  <p><strong>Note:</strong> If no dynamic properties are provided, the node uses the configured subject from the node settings. This allows both static and dynamic subscription modes.</p>
 
   <h3>Outputs</h3>
   <dl class="message-properties">
@@ -242,6 +263,8 @@ msg.endTime = "2025-08-15T20:07:10.071Z"</code></pre>
 
   <h3>Features</h3>
   <ul>
+    <li><strong>Dynamic Subscriptions:</strong> Change subscription subject and queue group at runtime via msg.topic/msg.subject and msg.queueGroup</li>
+    <li><strong>Queue Groups:</strong> Support for NATS queue groups for load balancing across multiple subscribers</li>
     <li><strong>Automatic Reconnection:</strong> Handles connection drops with exponential backoff</li>
     <li><strong>Message Parsing:</strong> Automatically parses UNS values and events</li>
     <li><strong>Status Monitoring:</strong> Real-time connection status display</li>
@@ -259,7 +282,7 @@ msg.endTime = "2025-08-15T20:07:10.071Z"</code></pre>
 
   <h3>Usage Examples</h3>
   
-  <h4>Subscribe to Temperature Sensor</h4>
+  <h4>Static Subscription (Configured Subject)</h4>
   <pre><code>// Configure node:
 // - Data Format: "UNS Value"
 // - Datapoint: "sensor.temperature"
@@ -269,6 +292,27 @@ msg.payload = 23.5
 msg.datatype = 2
 msg.id = "sensor.temperature"
 msg.timestamp = 1703123456789</code></pre>
+  
+  <h4>Dynamic Subscription (via Input)</h4>
+  <pre><code>// Configure node (optional base subject):
+// - Data Format: "auto"
+// - Subject: "" (empty, or use as fallback)
+
+// Send input message to change subscription:
+msg.topic = "sensor.temperature"
+// or
+msg.subject = "sensor.humidity"
+
+// Node will subscribe to the new subject dynamically
+// Output messages will contain data from the subscribed subject</code></pre>
+  
+  <h4>Dynamic Subscription with Queue Group</h4>
+  <pre><code>// Send input message:
+msg.topic = "orders.process"
+msg.queueGroup = "order-workers"
+
+// Multiple nodes with the same queue group will share messages
+// (load balancing across subscribers)</code></pre>
   
   <h4>Subscribe to Alarm Events</h4>
   <pre><code>// Configure node:
