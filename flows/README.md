@@ -1,57 +1,57 @@
 # 📁 Node-RED Flow Examples
 
-Dieser Ordner enthält Beispiel-Flows für alle Nodes im `node-red-contrib-nats-suite` Package.
+This folder contains example flows for all nodes in the `node-red-contrib-nats-suite` package.
 
-## 🚀 Verfügbare Beispiel-Flows
+## 🚀 Available Example Flows
 
 ### **Core Nodes**
 
-| **Flow** | **Beschreibung** | **Features** |
-|----------|------------------|--------------|
-| `nats-suite-server-example.json` | UNS Server Konfigurationen | Basic, TLS, JWT, NKey Authentication |
-| `nats-suite-publish-example.json` | UNS Publish Szenarien | UNS Value, Event, Specific Topic, Batch, Rate Limiting |
-| `nats-suite-subscribe-example.json` | UNS Subscribe Szenarien | UNS Value, Event, Reply, Specific Subject, Wildcard |
-| `nats-suite-request-example.json` | UNS Request-Reply Pattern | Simple, Data, Timeout, Batch, Error Handling |
-| `nats-suite-health-example.json` | UNS Health Monitoring | Basic, Detailed, Minimal, Stress Test, Alert |
+| **Flow** | **Description** | **Features** |
+|----------|-----------------|--------------|
+| `nats-suite-server-example.json` | NATS server configurations | Basic, TLS, JWT, NKey authentication |
+| `nats-suite-publish-example.json` | NATS publish scenarios | Value, Event, Specific Topic, Batch, Rate Limiting |
+| `nats-suite-subscribe-example.json` | NATS subscribe scenarios | Value, Event, Reply, Specific Subject, Wildcard |
+| `nats-suite-request-example.json` | NATS request-reply patterns | Simple, Data, Timeout, Batch, Error handling |
+| `nats-suite-health-example.json` | NATS health monitoring | Basic, Detailed, Minimal, Stress Test, Alert |
 
 ### **Advanced Nodes**
 
-| **Flow** | **Beschreibung** | **Features** |
-|----------|------------------|--------------|
-| `nats-suite-kv-get-example.json` | NATS-SUITE KV Get Szenarien | Get, Watch, List, History, Test Data |
-| `nats-suite-kv-put-example.json` | UNS KV Put Szenarien | Put, Create, Update, Delete, Purge, TTL, Batch |
-| `nats-suite-stream-publisher-example.json` | UNS Stream Publisher Szenarien | Simple, Sensor, Event, Batch, Persistent, Throughput |
-| `nats-suite-stream-consumer-example.json` | UNS Stream Consumer Szenarien | Pull, Push, Replay, Batch, Durable, Throughput |
+| **Flow** | **Description** | **Features** |
+|----------|-----------------|--------------|
+| `nats-suite-kv-get-example.json` | NATS Suite KV Get scenarios | Get, Watch, List, History, Test data |
+| `nats-suite-kv-put-example.json` | NATS Suite KV Put scenarios | Put, Create, Update, Delete, Purge, TTL, Batch |
+| `nats-suite-stream-publisher-example.json` | NATS stream publisher scenarios | Simple, Sensor, Event, Batch, Persistent, Throughput |
+| `nats-suite-stream-consumer-example.json` | NATS stream consumer scenarios | Pull, Push, Replay, Batch, Durable, Throughput |
 
-## 📋 Verwendung
+## 📋 Usage
 
-### **1. Flow Importieren**
+### **1. Import a Flow**
 
-1. Öffne Node-RED
-2. Gehe zu **Menu** → **Import**
-3. Wähle **"Select a file to import"**
-4. Wähle eine der `.json` Dateien aus diesem Ordner
-5. Klicke **"Import"**
+1. Open Node-RED
+2. Go to **Menu** → **Import**
+3. Choose **"Select a file to import"**
+4. Select one of the `.json` files from this folder
+5. Click **"Import"**
 
-### **2. Konfiguration anpassen**
+### **2. Adjust Configuration**
 
-- **NATS Server**: Passe die Server-URL und Authentifizierung an
-- **Credentials**: Konfiguriere die NATS Server Credentials
-- **Subjects**: Passe die NATS Subjects an deine Anwendung an
-- **Streams**: Konfiguriere JetStream Streams und Consumers
+- **NATS Server**: Adjust server URL and authentication
+- **Credentials**: Configure NATS server credentials
+- **Subjects**: Adapt NATS subjects to your application
+- **Streams**: Configure JetStream streams and consumers
 
-### **3. Flow testen**
+### **3. Test the Flow**
 
-- **Inject Nodes**: Verwende die Inject Nodes um Test-Daten zu generieren
-- **Debug Nodes**: Überwache die Ausgabe in der Debug-Sidebar
-- **Status**: Überprüfe den Status der NATS Server Verbindung
+- **Inject nodes**: Use inject nodes to generate test data
+- **Debug nodes**: Monitor the output in the debug sidebar
+- **Status**: Check the status of the NATS server connection
 
-## 🔧 Konfiguration
+## 🔧 Configuration
 
 ### **NATS Server Setup**
 
 ```javascript
-// Beispiel Konfiguration
+// Example configuration
 {
   "server": "localhost:4222",
   "authMethod": "none",
@@ -62,7 +62,7 @@ Dieser Ordner enthält Beispiel-Flows für alle Nodes im `node-red-contrib-nats-
 ### **Credentials Setup**
 
 ```javascript
-// Beispiel Credentials (in Node-RED Credentials gespeichert)
+// Example credentials (stored in Node-RED credentials)
 {
   "user": "nats_user",
   "pass": "nats_password",
@@ -72,105 +72,104 @@ Dieser Ordner enthält Beispiel-Flows für alle Nodes im `node-red-contrib-nats-
 }
 ```
 
-## 📊 Flow Übersicht
+## 📊 Flow Overview
 
 ### **nats-suite-server-example.json**
-- **Basic Server**: Einfache Verbindung ohne TLS
-- **TLS Server**: Sichere Verbindung mit TLS/SSL
-- **JWT Server**: Authentifizierung mit JWT + NKey
+- **Basic Server**: Simple connection without TLS
+- **TLS Server**: Secure connection with TLS/SSL
+- **JWT Server**: Authentication with JWT + NKey
 
 ### **nats-suite-publish-example.json**
-- **UNS Value**: Einfache Werte mit automatischer Datatype-Erkennung
-- **UNS Event**: Strukturierte Events mit UUID und Timestamp
-- **Specific Topic**: Custom NATS Subjects außerhalb UNS Schema
-- **Batch Publishing**: Gruppierung von Messages für bessere Performance
-- **Rate Limiting**: Schutz vor Message-Flooding mit Token Bucket
+- **Value**: Simple values with automatic data type detection
+- **Event**: Structured events with UUID and timestamp
+- **Specific Topic**: Custom NATS subjects outside a fixed schema
+- **Batch Publishing**: Grouping of messages for better performance
+- **Rate Limiting**: Protection against message flooding with token bucket
 
 ### **nats-suite-subscribe-example.json**
-- **UNS Value**: Abonniert UNS Datapoint Werte
-- **UNS Event**: Abonniert UNS Events mit UUID und Timestamp
-- **Reply**: Abonniert Reply Messages
-- **Specific Subject**: Abonniert Custom NATS Subjects
-- **Wildcard**: Abonniert mehrere Subjects mit Wildcards
+- **Value**: Subscribes to datapoint values
+- **Event**: Subscribes to events with UUID and timestamp
+- **Reply**: Subscribes to reply messages
+- **Specific Subject**: Subscribes to custom NATS subjects
+- **Wildcard**: Subscribes to multiple subjects using wildcards
 
 ### **nats-suite-request-example.json**
-- **Simple Request**: Einfache Anfrage mit kurzer Antwort
-- **Data Request**: Datenbankabfrage mit längerer Antwortzeit
-- **Timeout Request**: Request mit kurzem Timeout (zeigt Timeout-Verhalten)
-- **Batch Request**: Batch-Verarbeitung mit vielen Daten
-- **Error Request**: Request an nicht existierenden Service (zeigt Error-Handling)
+- **Simple Request**: Simple request with short response
+- **Data Request**: Data query with longer response time
+- **Timeout Request**: Request with short timeout (shows timeout behaviour)
+- **Batch Request**: Batch processing with multiple items
+- **Error Request**: Request to a non-existing service (shows error handling)
 
 ### **nats-suite-health-example.json**
-- **Basic Health Check**: Standard Health Check alle 10s
-- **Detailed Health Check**: Detaillierte Checks alle 30s
-- **Minimal Health Check**: Nur Connection Test alle 5s
-- **Stress Test Health Check**: Hohe Thresholds für Performance-Tests
-- **Alert Health Check**: Niedrige Thresholds für Alerts
+- **Basic Health Check**: Standard health check every 10s
+- **Detailed Health Check**: Detailed checks every 30s
+- **Minimal Health Check**: Connection-only test every 5s
+- **Stress Test Health Check**: High thresholds for performance tests
+- **Alert Health Check**: Low thresholds for alerts
 
 ### **nats-suite-kv-get-example.json**
-- **Get Value**: Holt einen einzelnen Wert aus dem KV Store
-- **Watch Key**: Überwacht Änderungen an einem Key
-- **Watch Multiple Keys**: Überwacht mehrere Keys mit Wildcards
-- **List All Keys**: Listet alle Keys in einem Bucket auf
-- **Get History**: Holt die Historie eines Keys
+- **Get Value**: Fetches a single value from the KV store
+- **Watch Key**: Watches changes of a single key
+- **Watch Multiple Keys**: Watches multiple keys using wildcards
+- **List All Keys**: Lists all keys in a bucket
+- **Get History**: Fetches the history of a key
 
 ### **nats-suite-kv-put-example.json**
-- **Put Value**: Speichert einen Wert (überschreibt existierende)
-- **Create Value**: Erstellt einen neuen Wert (fehlschlag wenn existiert)
-- **Update Value**: Aktualisiert einen existierenden Wert (fehlschlag wenn nicht existiert)
-- **Delete Value**: Löscht einen Wert
-- **Purge Bucket**: Löscht alle Werte in einem Bucket
-- **TTL Example**: Speichert mit Time-To-Live
+- **Put Value**: Stores a value (overwrites existing)
+- **Create Value**: Creates a new value (fails if it exists)
+- **Update Value**: Updates an existing value (fails if it does not exist)
+- **Delete Value**: Deletes a value
+- **Purge Bucket**: Removes all values from a bucket
+- **TTL Example**: Stores a value with time-to-live
 
 ### **nats-suite-stream-publisher-example.json**
-- **Simple Message**: Einfache Nachricht in einen Stream
-- **Sensor Data**: Sensordaten mit Deduplication
-- **Event Data**: Event-Nachrichten mit Headers
-- **Batch Data**: Batch-Verarbeitung von Daten
-- **Persistent Data**: Dauerhafte Speicherung mit Interest Policy
-- **High Throughput**: Hohe Nachrichtenrate mit Memory Storage
+- **Simple Message**: Simple message written to a stream
+- **Sensor Data**: Sensor data with deduplication
+- **Event Data**: Event messages with headers
+- **Batch Data**: Batch processing of data
+- **Persistent Data**: Persistent storage using interest policy
+- **High Throughput**: High message rate using memory storage
 
 ### **nats-suite-stream-consumer-example.json**
-- **Pull Consumer**: Manuell getriggerte Nachrichtenabholung
-- **Push Consumer**: Automatisch gepushte Nachrichten mit Heartbeat
-- **Replay Consumer**: Replay aller Nachrichten in einem Stream
-- **Batch Consumer**: Batch-Verarbeitung von Nachrichten
-- **Durable Consumer**: Persistenter Consumer mit State
-- **Throughput Consumer**: Hohe Nachrichtenrate mit Flow Control
+- **Pull Consumer**: Manually triggered message retrieval
+- **Push Consumer**: Automatically pushed messages with heartbeat
+- **Replay Consumer**: Replay of all messages in a stream
+- **Batch Consumer**: Batch processing of messages
+- **Durable Consumer**: Persistent consumer with state
+- **Throughput Consumer**: High message rate with flow control
 
-## 🛠️ Anpassungen
+## 🛠️ Customisation
 
-### **Eigene Flows erstellen**
+### **Create Your Own Flows**
 
-1. **Kopiere** einen bestehenden Flow
-2. **Passe** die Konfiguration an deine Bedürfnisse an
-3. **Teste** den Flow mit deinen Daten
-4. **Speichere** den Flow in deinem Node-RED
+1. **Copy** an existing flow
+2. **Adjust** the configuration to your needs
+3. **Test** the flow with your data
+4. **Save** the flow in your Node-RED instance
 
-### **Erweiterte Konfiguration**
+### **Advanced Configuration**
 
-- **Streams**: Konfiguriere JetStream Streams mit verschiedenen Retention Policies
-- **Consumers**: Erstelle Consumer mit verschiedenen Acknowledgment Policies
-- **KV Stores**: Verwende NATS KV Store für verteilte Konfiguration
-- **Security**: Implementiere TLS/SSL und erweiterte Authentifizierung
+- **Streams**: Configure JetStream streams with different retention policies
+- **Consumers**: Create consumers with different acknowledgment policies
+- **KV Stores**: Use NATS KV Store for distributed configuration
+- **Security**: Implement TLS/SSL and advanced authentication
 
-## 📚 Weitere Informationen
+## 📚 Further Information
 
-- **README.md**: Hauptdokumentation des Packages
-- **CHANGELOG.md**: Änderungsprotokoll
-- **SECURITY.md**: Sicherheitsrichtlinien
-- **docs/**: Detaillierte Dokumentation
+- **README.md**: Main documentation of the package
+- **CHANGELOG.md**: Change log
+- **SECURITY.md**: Security guidelines
+- **docs/**: Detailed documentation (if available)
 
 ## 🤝 Support
 
-Bei Fragen oder Problemen:
+If you have questions or issues:
 
-1. **Überprüfe** die Debug-Ausgabe
-2. **Konsultiere** die Dokumentation
-3. **Teste** mit den Beispiel-Flows
-4. **Erstelle** ein Issue im Repository
+1. **Check** the debug output
+2. **Consult** the documentation
+3. **Test** with the example flows
+4. **Create** an issue in the repository
 
 ---
 
-**Viel Spaß beim Experimentieren mit den Beispiel-Flows!** 🚀
-
+**Have fun experimenting with the example flows!** 🚀

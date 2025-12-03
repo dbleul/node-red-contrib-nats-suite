@@ -4,7 +4,7 @@
     "type": "tab",
     "label": "NATS Request Examples",
     "disabled": false,
-    "info": "Beispiele für NATS Request-Reply Pattern mit verschiedenen Szenarien"
+    "info": "Examples for NATS request-reply patterns with different scenarios"
   },
   {
     "id": "nats-suite-server",
@@ -324,8 +324,8 @@
     "id": "comment-1",
     "type": "comment",
     "z": "nats-suite-request-example",
-    "name": "NATS Request Beispiele",
-    "info": "Verschiedene NATS Request-Reply Szenarien:\n\n1. **Simple Request**: Einfache Anfrage mit kurzer Antwort\n2. **Data Request**: Datenbankabfrage mit längerer Antwortzeit\n3. **Timeout Request**: Request mit kurzem Timeout (zeigt Timeout-Verhalten)\n4. **Batch Request**: Batch-Verarbeitung mit vielen Daten\n5. **Error Request**: Request an nicht existierenden Service (zeigt Error-Handling)\n\n**Features:**\n- Request-Reply Pattern\n- Timeout-Handling\n- Error-Handling\n- Debug-Logging\n- JSON Payload Support\n- Connection Pooling",
+    "name": "NATS request examples",
+    "info": "Different NATS request-reply scenarios:\n\n1. **Simple Request**: Simple request with short response\n2. **Data Request**: Data query with longer response time\n3. **Timeout Request**: Request with short timeout (demonstrates timeout behaviour)\n4. **Batch Request**: Batch processing with many data items\n5. **Error Request**: Request to a non-existing service (demonstrates error handling)\n\n**Features:**\n- Request-reply pattern\n- Timeout handling\n- Error handling\n- Debug logging\n- JSON payload support\n- Connection pooling",
     "x": 200,
     "y": 40,
     "wires": []

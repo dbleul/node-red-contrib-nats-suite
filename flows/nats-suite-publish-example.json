@@ -4,7 +4,7 @@
     "type": "tab",
     "label": "NATS Publish Examples",
     "disabled": false,
-    "info": "Beispiele für verschiedene NATS Publish Szenarien mit allen Features"
+    "info": "Examples for various NATS publish scenarios with all features"
   },
   {
     "id": "nats-suite-server",
@@ -312,8 +312,8 @@
     "id": "comment-1",
     "type": "comment",
     "z": "nats-suite-publish-example",
-    "name": "NATS Publish Beispiele",
-    "info": "Verschiedene NATS Publish Szenarien:\n\n1. **NATS-SUITE Value**: Einfache Werte mit automatischer Datatype-Erkennung\n2. **NATS-SUITE Event**: Strukturierte Events mit UUID und Timestamp\n3. **Specific Topic**: Custom NATS Subjects außerhalb NATS-SUITE Schema\n4. **Batch Publishing**: Gruppierung von Messages für bessere Performance\n5. **Rate Limiting**: Schutz vor Message-Flooding mit Token Bucket\n\n**Features:**\n- Automatische Datatype-Erkennung (1-6)\n- Manuelle Datatype-Override\n- Message Buffering bei Disconnect\n- Batch Publishing (Size/Time/Hybrid)\n- Rate Limiting (Drop/Delay)\n- Auto-Reply Handler",
+    "name": "NATS publish examples",
+    "info": "Different NATS publish scenarios:\n\n1. **NATS-SUITE Value**: Simple values with automatic data type detection\n2. **NATS-SUITE Event**: Structured events with UUID and timestamp\n3. **Specific Topic**: Custom NATS subjects outside the NATS-SUITE schema\n4. **Batch Publishing**: Grouping messages for better performance\n5. **Rate Limiting**: Protection against message flooding with a token bucket\n\n**Features:**\n- Automatic data type detection (1-6)\n- Manual data type override\n- Message buffering on disconnect\n- Batch publishing (size/time/hybrid)\n- Rate limiting (drop/delay)\n- Auto-reply handler",
     "x": 200,
     "y": 40,
     "wires": []

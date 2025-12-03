@@ -12,7 +12,7 @@
         "type": "tab",
         "label": "01 - Message Headers Test",
         "disabled": false,
-        "info": "Test für Message Headers Feature\n\n1. Deploy Flow\n2. Inject klicken\n3. Debug Output prüfen: Headers müssen enthalten sein"
+        "info": "Test for Message Headers feature\n\n1. Deploy the flow\n2. Click the inject node\n3. Check debug output: headers should be present"
     },
     {
         "id": "f299d3b622714522",
@@ -67,7 +67,7 @@
         "z": "headers-example",
         "name": "Publish with Headers",
         "server": "f299d3b622714522",
-        "debug": true,
+        "debug": false,
         "enableBuffer": false,
         "bufferSize": "",
         "bufferSizeBytes": "",

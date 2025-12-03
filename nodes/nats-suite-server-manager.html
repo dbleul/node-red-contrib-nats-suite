@@ -60,11 +60,11 @@
   </div>
   
   <div class="form-row">
-    <label for="node-input-serverType"><i class="fa fa-server"></i> Server Typ</label>
+    <label for="node-input-serverType"><i class="fa fa-server"></i> Server Type</label>
     <select id="node-input-serverType">
       <option value="embedded">Embedded (nats-memory-server)</option>
-      <option value="nats-server">NATS Server Prozess</option>
-      <option value="leaf">Leaf Node Server</option>
+      <option value="nats-server">NATS server process</option>
+      <option value="leaf">Leaf node server</option>
     </select>
   </div>
 
@@ -84,89 +84,89 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-leafRemoteUser"><i class="fa fa-user"></i> Remote Benutzername (optional)</label>
-    <input type="text" id="node-input-leafRemoteUser" placeholder="Benutzername">
+    <label for="node-input-leafRemoteUser"><i class="fa fa-user"></i> Remote username (optional)</label>
+    <input type="text" id="node-input-leafRemoteUser" placeholder="Username">
   </div>
 
   <div class="form-row">
-    <label for="node-input-leafRemotePass"><i class="fa fa-lock"></i> Remote Passwort (optional)</label>
-    <input type="password" id="node-input-leafRemotePass" placeholder="Passwort">
+    <label for="node-input-leafRemotePass"><i class="fa fa-lock"></i> Remote password (optional)</label>
+    <input type="password" id="node-input-leafRemotePass" placeholder="Password">
   </div>
 
   <div class="form-row">
     <label for="node-input-enableJetStream">
       <input type="checkbox" id="node-input-enableJetStream" style="display: inline-block; width: auto; vertical-align: top;">
-      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">JetStream aktivieren</span>
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Enable JetStream</span>
     </label>
   </div>
 
   <div class="form-row">
-    <label for="node-input-storeDir"><i class="fa fa-folder"></i> JetStream Store Verzeichnis (optional)</label>
+    <label for="node-input-storeDir"><i class="fa fa-folder"></i> JetStream store directory (optional)</label>
     <input type="text" id="node-input-storeDir" placeholder="/tmp/nats-jetstream">
   </div>
 
   <div class="form-row">
     <label for="node-input-autoStart">
       <input type="checkbox" id="node-input-autoStart" style="display: inline-block; width: auto; vertical-align: top;" checked>
-      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Automatisch beim Start</span>
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Start automatically on deploy</span>
     </label>
   </div>
 
   <div class="form-row">
     <label for="node-input-debug">
       <input type="checkbox" id="node-input-debug" style="display: inline-block; width: auto; vertical-align: top;">
-      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Debug Logging</span>
+      <span style="width: auto; display: inline-block; margin-left: 5px; vertical-align: top;">Debug logging</span>
     </label>
   </div>
 </script>
 
 <script type="text/html" data-help-name="nats-suite-server-manager">
-  <p>Startet und verwaltet einen NATS Server direkt in Node-RED.</p>
+  <p>Starts and manages a NATS server directly from Node-RED.</p>
 
-  <h3>Server Typen</h3>
+  <h3>Server types</h3>
   
-  <h4>Embedded Server (nats-memory-server)</h4>
-  <p>Verwendet einen In-Memory NATS Server für Tests und Entwicklung. Erfordert <code>nats-memory-server</code> Paket.</p>
+  <h4>Embedded server (nats-memory-server)</h4>
+  <p>Uses an in-memory NATS server for testing and development. Requires the <code>nats-memory-server</code> package.</p>
   <p><strong>Installation:</strong></p>
   <pre><code>npm install nats-memory-server</code></pre>
 
-  <h4>NATS Server Prozess</h4>
-  <p>Startet den offiziellen NATS Server als separaten Prozess. Erfordert, dass <code>nats-server</code> im PATH verfügbar ist.</p>
+  <h4>NATS server process</h4>
+  <p>Starts the official NATS server as a separate process. Requires <code>nats-server</code> to be available in the PATH.</p>
   <p><strong>Installation:</strong></p>
-  <pre><code># Linux/Mac
+  <pre><code>// Linux/Mac
 brew install nats-server
-# oder
+// or
 go install github.com/nats-io/nats-server/v2@latest
 
-# Windows
-# Download von https://github.com/nats-io/nats-server/releases</code></pre>
+// Windows
+// Download from https://github.com/nats-io/nats-server/releases</code></pre>
 
-  <h4>Leaf Node Server</h4>
-  <p>Startet einen Leaf Node Server, der sich mit einem entfernten NATS Cluster verbindet.</p>
+  <h4>Leaf node server</h4>
+  <p>Starts a leaf node server that connects to a remote NATS cluster.</p>
 
-  <h3>Eingabe</h3>
-  <p>Steuern Sie den Server mit Nachrichten:</p>
+  <h3>Input</h3>
+  <p>Control the server with messages:</p>
   <ul>
-    <li><code>msg.payload.command = "start"</code> - Server starten</li>
-    <li><code>msg.payload.command = "stop"</code> - Server stoppen</li>
-    <li><code>msg.payload.command = "restart"</code> - Server neu starten</li>
-    <li><code>msg.payload.command = "status"</code> - Status abfragen</li>
-    <li><code>msg.payload.command = "toggle"</code> - Start/Stop umschalten (Standard)</li>
+    <li><code>msg.payload.command = "start"</code> - start server</li>
+    <li><code>msg.payload.command = "stop"</code> - stop server</li>
+    <li><code>msg.payload.command = "restart"</code> - restart server</li>
+    <li><code>msg.payload.command = "status"</code> - query status</li>
+    <li><code>msg.payload.command = "toggle"</code> - toggle start/stop (default)</li>
   </ul>
 
-  <h3>Ausgabe</h3>
-  <p>Sendet Status-Ereignisse:</p>
+  <h3>Output</h3>
+  <p>Sends status events:</p>
   <ul>
-    <li><code>msg.topic = "server.started"</code> - Server wurde gestartet</li>
-    <li><code>msg.topic = "server.stopped"</code> - Server wurde gestoppt</li>
-    <li><code>msg.topic = "server.status"</code> - Status-Informationen</li>
+    <li><code>msg.topic = "server.started"</code> - server was started</li>
+    <li><code>msg.topic = "server.stopped"</code> - server was stopped</li>
+    <li><code>msg.topic = "server.status"</code> - status information</li>
   </ul>
-  <p><code>msg.payload</code> enthält Details wie Port, URL, PID, etc.</p>
+  <p><code>msg.payload</code> contains details such as port, URL, PID, etc.</p>
 
-  <h3>Verwendung</h3>
-  <p>Nach dem Start können Sie sich mit anderen NATS-Suite-Knoten verbinden:</p>
+  <h3>Usage</h3>
+  <p>After starting the server you can connect with other NATS Suite nodes:</p>
   <pre><code>nats://localhost:4222</code></pre>
-  <p>Für Leaf Node:</p>
+  <p>For a leaf node server:</p>
   <pre><code>nats://localhost:7422</code></pre>
 </script>
 

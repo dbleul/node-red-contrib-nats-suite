@@ -4,7 +4,7 @@
         "type": "tab",
         "label": "01 - Message Headers Test",
         "disabled": false,
-        "info": "Test für Message Headers Feature\n\n1. Deploy Flow\n2. Inject klicken\n3. Debug Output prüfen: Headers müssen enthalten sein"
+        "info": "Test for Message Headers feature\n\n1. Deploy the flow\n2. Click the inject node\n3. Check debug output: headers should be present"
     },
     {
         "id": "inject-headers",
@@ -87,8 +87,8 @@
         "id": "comment-headers",
         "type": "comment",
         "z": "headers-example",
-        "name": "✨ Neues Feature: Message Headers ✨",
-        "info": "# Message Headers Test\n\n## Erwartet:\n- msg.headers.X-App: \"Node-RED\"\n- msg.headers.X-Version: \"1.0\"\n- msg.headers.X-User: \"TestUser\"\n- msg.headers.X-Request-ID: \"12345\"\n\n## Debug Log:\n- \"Publishing with headers: {...}\"",
+        "name": "✨ New Feature: Message Headers ✨",
+        "info": "# Message Headers Test\n\n## Expected:\n- msg.headers.X-App: \"Node-RED\"\n- msg.headers.X-Version: \"1.0\"\n- msg.headers.X-User: \"TestUser\"\n- msg.headers.X-Request-ID: \"12345\"\n\n## Debug log:\n- \"Publishing with headers: {...}\"",
         "x": 190,
         "y": 40,
         "wires": []

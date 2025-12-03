@@ -47,15 +47,15 @@ module.exports = function (RED) {
         // Try to use nats-memory-server if available
         let NatsServer;
         try {
-          // Versuche zuerst direkt zu laden
+          // Try to require directly first
           NatsServer = require('nats-memory-server').NatsServer;
         } catch (e) {
-          // Versuche aus verschiedenen möglichen Pfaden
+          // Try to resolve from several possible paths
           try {
             const path = require('path');
             const fs = require('fs');
-            // Mögliche Pfade für nats-memory-server
-            // __dirname zeigt auf: /data/node_modules/node-red-contrib-nats-suite/nodes
+            // Possible paths for nats-memory-server
+            // __dirname points to: /data/node_modules/node-red-contrib-nats-suite/nodes
             const possiblePaths = [
               path.join(__dirname, '../node_modules/nats-memory-server'), // Lokales node_modules (RICHTIG!)
               path.join(__dirname, '../../node_modules/nats-memory-server'), // Fallback
@@ -81,10 +81,10 @@ module.exports = function (RED) {
               throw new Error('nats-memory-server not found');
             }
           } catch (err2) {
-            const installHint = 'Für Embedded Server: npm install nats-memory-server';
-            node.error(`nats-memory-server nicht installiert. ${installHint}`);
-            node.warn(`💡 Alternative: Verwenden Sie "NATS Server Prozess" oder "Leaf Node" als Server-Typ.`);
-            setStatus('error', 'nats-memory-server fehlt');
+            const installHint = 'For embedded server: npm install nats-memory-server';
+            node.error(`nats-memory-server not installed. ${installHint}`);
+            node.warn('💡 Alternative: use "NATS server process" or "Leaf node" as server type.');
+            setStatus('error', 'nats-memory-server missing');
             return;
           }
         }
@@ -93,7 +93,7 @@ module.exports = function (RED) {
         const requestedPort = parseInt(node.port) || 4222;
         const enableJetStream = node.enableJetStream !== false; // Default true
         
-        log(`Starte embedded NATS Server auf Port ${requestedPort}...`);
+        log(`Starting embedded NATS server on port ${requestedPort}...`);
         setStatus('starting', 'starting embedded...');
 
         // Create server with proper options
@@ -121,7 +121,7 @@ module.exports = function (RED) {
         await natsServer.start();
         serverPort = natsServer.getPort ? natsServer.getPort() : (natsServer.port || requestedPort);
 
-        log(`Embedded NATS Server läuft auf Port ${serverPort}`);
+        log(`Embedded NATS server is running on port ${serverPort}`);
         setStatus('running', `embedded:${serverPort}`);
         
         node.send({
@@ -133,7 +133,7 @@ module.exports = function (RED) {
           }
         });
       } catch (err) {
-        node.error(`Fehler beim Starten des embedded Servers: ${err.message}`);
+        node.error(`Failed to start embedded server: ${err.message}`);
         setStatus('error', err.message.substring(0, 20));
       }
     };
@@ -141,7 +141,7 @@ module.exports = function (RED) {
     // Start NATS server as child process
     const startNatsServerProcess = () => {
       return new Promise((resolve, reject) => {
-        log(`Starte NATS Server Prozess auf Port ${node.port}...`);
+        log(`Starting NATS server process on port ${node.port}...`);
         setStatus('starting', 'starting process...');
 
         // Check if nats-server is available
@@ -156,7 +156,7 @@ module.exports = function (RED) {
           }
         }
 
-        log(`Befehl: ${natsServerCmd} ${args.join(' ')}`);
+        log(`Command: ${natsServerCmd} ${args.join(' ')}`);
 
         natsServerProcess = spawn(natsServerCmd, args, {
           stdio: node.debug ? 'inherit' : 'pipe',
@@ -173,23 +173,23 @@ module.exports = function (RED) {
         natsServerProcess.on('error', (err) => {
           clearTimeout(timeout);
           if (err.code === 'ENOENT') {
-            node.error('nats-server nicht gefunden. Installieren Sie NATS Server oder verwenden Sie embedded Server.');
-            setStatus('error', 'nats-server fehlt');
+            node.error('nats-server not found. Install NATS server or use embedded server.');
+            setStatus('error', 'nats-server missing');
             reject(new Error('nats-server command not found'));
           } else {
-            node.error(`Fehler beim Starten: ${err.message}`);
+            node.error(`Error while starting: ${err.message}`);
             setStatus('error', err.message.substring(0, 20));
             reject(err);
           }
         });
 
         natsServerProcess.on('spawn', () => {
-          log('NATS Server Prozess gestartet');
+          log('NATS server process started');
         });
 
         natsServerProcess.stdout?.on('data', (data) => {
           const output = data.toString();
-          log(`NATS Server: ${output}`);
+          log(`NATS server: ${output}`);
           if (output.includes('listening') && !started) {
             started = true;
             clearTimeout(timeout);
@@ -210,11 +210,11 @@ module.exports = function (RED) {
 
         natsServerProcess.stderr?.on('data', (data) => {
           const output = data.toString();
-          log(`NATS Server stderr: ${output}`);
+          log(`NATS server stderr: ${output}`);
         });
 
         natsServerProcess.on('exit', (code) => {
-          log(`NATS Server beendet mit Code ${code}`);
+          log(`NATS server exited with code ${code}`);
           setStatus('stopped', `exited:${code}`);
           natsServerProcess = null;
           node.send({
@@ -228,7 +228,7 @@ module.exports = function (RED) {
     // Start Leaf Node Server
     const startLeafNodeServer = () => {
       return new Promise((resolve, reject) => {
-        log(`Starte Leaf Node Server auf Port ${node.leafPort}...`);
+        log(`Starting leaf node server on port ${node.leafPort}...`);
         setStatus('starting', 'starting leaf...');
 
         const natsServerCmd = process.platform === 'win32' ? 'nats-server.exe' : 'nats-server';
@@ -255,7 +255,7 @@ module.exports = function (RED) {
           args.push('-js');
         }
 
-        log(`Befehl: ${natsServerCmd} ${args.join(' ')}`);
+        log(`Command: ${natsServerCmd} ${args.join(' ')}`);
 
         natsServerProcess = spawn(natsServerCmd, args, {
           stdio: node.debug ? 'inherit' : 'pipe',
@@ -272,23 +272,23 @@ module.exports = function (RED) {
         natsServerProcess.on('error', (err) => {
           clearTimeout(timeout);
           if (err.code === 'ENOENT') {
-            node.error('nats-server nicht gefunden. Installieren Sie NATS Server.');
-            setStatus('error', 'nats-server fehlt');
+            node.error('nats-server not found. Install NATS server.');
+            setStatus('error', 'nats-server missing');
             reject(new Error('nats-server command not found'));
           } else {
-            node.error(`Fehler beim Starten: ${err.message}`);
+            node.error(`Error while starting: ${err.message}`);
             setStatus('error', err.message.substring(0, 20));
             reject(err);
           }
         });
 
         natsServerProcess.on('spawn', () => {
-          log('Leaf Node Server Prozess gestartet');
+          log('Leaf node server process started');
         });
 
         natsServerProcess.stdout?.on('data', (data) => {
           const output = data.toString();
-          log(`Leaf Node: ${output}`);
+          log(`Leaf node: ${output}`);
           if (output.includes('listening') && !started) {
             started = true;
             clearTimeout(timeout);
@@ -309,7 +309,7 @@ module.exports = function (RED) {
         });
 
         natsServerProcess.on('exit', (code) => {
-          log(`Leaf Node Server beendet mit Code ${code}`);
+          log(`Leaf node server exited with code ${code}`);
           setStatus('stopped', `exited:${code}`);
           natsServerProcess = null;
           // Clean up config file
@@ -328,16 +328,16 @@ module.exports = function (RED) {
 
     // Stop server
     const stopServer = async () => {
-      log('Stoppe NATS Server...');
+      log('Stopping NATS server...');
       setStatus('stopped', 'stopping...');
 
       if (natsServer) {
         // Embedded server
         try {
           await natsServer.stop();
-          log('Embedded Server gestoppt');
+          log('Embedded server stopped');
         } catch (err) {
-          node.error(`Fehler beim Stoppen: ${err.message}`);
+          node.error(`Error while stopping: ${err.message}`);
         }
         natsServer = null;
       }
@@ -346,7 +346,7 @@ module.exports = function (RED) {
         // Process server
         natsServerProcess.kill('SIGTERM');
         natsServerProcess = null;
-        log('Server Prozess gestoppt');
+        log('Server process stopped');
       }
 
       serverPort = null;
@@ -371,11 +371,11 @@ module.exports = function (RED) {
             await startLeafNodeServer();
             break;
           default:
-            node.error(`Unbekannter Server-Typ: ${node.serverType}`);
+            node.error(`Unknown server type: ${node.serverType}`);
             setStatus('error', 'unknown type');
         }
       } catch (err) {
-        node.error(`Fehler beim Starten: ${err.message}`);
+        node.error(`Error while starting: ${err.message}`);
         setStatus('error', err.message.substring(0, 20));
       }
     };

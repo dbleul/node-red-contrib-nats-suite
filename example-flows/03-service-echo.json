@@ -4,7 +4,7 @@
         "type": "tab",
         "label": "03 - Service API Echo Service",
         "disabled": false,
-        "info": "Test für Service API Feature - Echo Service\n\n1. Deploy Flow (Service startet automatisch)\n2. 'Discover Services' klicken → Service wird gefunden\n3. 'Call Echo Service' klicken → Erhält Echo-Response\n4. 'Get Service Stats' klicken → Zeigt Request-Statistiken"
+        "info": "Test for Service API feature - Echo Service\n\n1. Deploy the flow (service starts automatically)\n2. Click 'Discover Services' → service is discovered\n3. Click 'Call Echo Service' → receives echo response\n4. Click 'Get Service Stats' → shows request statistics"
     },
     {
         "id": "service-echo",
@@ -280,8 +280,8 @@
         "id": "comment-service",
         "type": "comment",
         "z": "service-echo-example",
-        "name": "✨ Neues Feature: Service API ✨",
-        "info": "# Service API Test - Echo Service\n\n## Service:\n- Name: echo-service\n- Version: 1.0.0\n- Endpoint: process (echo.process)\n- Auto-Start: TRUE\n\n## Tests:\n1. **Discover:** Findet alle Services\n2. **Call:** Sendet Request, erhält Echo\n3. **Stats:** Zeigt Request-Statistiken\n4. **Ping:** Prüft Service-Verfügbarkeit\n\n## Erwartete Outputs:\n\n### Discover:\n```json\n[\n  {\n    \"name\": \"echo-service\",\n    \"version\": \"1.0.0\",\n    \"description\": \"Simple Echo Service\"\n  }\n]\n```\n\n### Call Response:\n```json\n{\n  \"echo\": \"Hello from client!\",\n  \"timestamp\": 1234567890,\n  \"service\": \"echo-service\",\n  \"version\": \"1.0.0\",\n  \"requestId\": \"req-12345\"\n}\n```\n\n### Stats:\n```json\n[\n  {\n    \"name\": \"echo-service\",\n    \"stats\": {\n      \"requests\": 5,\n      \"errors\": 0\n    }\n  }\n]\n```",
+        "name": "✨ New Feature: Service API ✨",
+        "info": "# Service API Test - Echo Service\n\n## Service:\n- Name: echo-service\n- Version: 1.0.0\n- Endpoint: process (echo.process)\n- Auto-Start: TRUE\n\n## Tests:\n1. **Discover:** Finds all services\n2. **Call:** Sends a request and receives an echo\n3. **Stats:** Shows request statistics\n4. **Ping:** Checks service availability\n\n## Expected outputs:\n\n### Discover:\n```json\n[\n  {\n    \"name\": \"echo-service\",\n    \"version\": \"1.0.0\",\n    \"description\": \"Simple Echo Service\"\n  }\n]\n```\n\n### Call response:\n```json\n{\n  \"echo\": \"Hello from client!\",\n  \"timestamp\": 1234567890,\n  \"service\": \"echo-service\",\n  \"version\": \"1.0.0\",\n  \"requestId\": \"req-12345\"\n}\n```\n\n### Stats:\n```json\n[\n  {\n    \"name\": \"echo-service\",\n    \"stats\": {\n      \"requests\": 5,\n      \"errors\": 0\n    }\n  }\n]\n```",
         "x": 180,
         "y": 40,
         "wires": []
