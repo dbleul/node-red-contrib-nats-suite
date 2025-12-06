@@ -11,7 +11,7 @@ A comprehensive Node-RED module for NATS (NATS Messaging System) with support fo
 
 ## Features
 
-### ✅ Core NATS (Basic NATS Core Functionality)
+### Core NATS (Basic NATS Core Functionality)
 - **Publish/Subscribe**: Full support for NATS Pub/Sub messaging
 - **Request/Reply**: NATS Request/Reply pattern for synchronous communication
 - **Queue Groups**: Load balancing with Queue Groups
@@ -23,7 +23,7 @@ A comprehensive Node-RED module for NATS (NATS Messaging System) with support fo
 - **Clustering**: Support for NATS clustering
 - **Leaf Nodes**: Support for NATS Leaf Node connections
 
-### ✅ JetStream (JetStream Functionality)
+### JetStream (JetStream Functionality)
 - **Streams**: JetStream Stream management with auto-creation
 - **Publishers**: Publishes messages to streams
 - **Consumers**: Pull/Push consumers with various modes
@@ -31,7 +31,7 @@ A comprehensive Node-RED module for NATS (NATS Messaging System) with support fo
 - **Replay**: Message replay functionality
 - **Deduplication**: Automatic deduplication
 
-### ✅ KV Store (NATS KV Functionality - uses JetStream)
+### KV Store (NATS KV Functionality - uses JetStream)
 - **Bucket Management**: Create and configure KV buckets
 - **Get/Put**: Read and write values
 - **Watch**: Monitor changes
@@ -39,7 +39,7 @@ A comprehensive Node-RED module for NATS (NATS Messaging System) with support fo
 - **TTL**: Time To Live support
 - **Compression**: Value compression
 
-### ✅ Object Store (NATS Object Store - uses JetStream)
+### Object Store (NATS Object Store - uses JetStream)
 - **Bucket Management**: Create and configure Object Store buckets
 - **Upload**: Upload objects (automatic chunking)
 - **Download**: Download objects
@@ -60,14 +60,14 @@ Or in the Node-RED Editor:
 
 ## Node Overview
 
-### 🔧 Configuration & Management
+### Configuration & Management
 
 | Node | Description | Category |
 |------|-------------|----------|
 | **nats-suite-server** | NATS Server connection configuration (for all other nodes) | Config |
 | **nats-suite-server-manager** | Starts/stops NATS Server directly in Node-RED (Embedded/Process/Leaf Node) | Management |
 
-### 📡 Core NATS
+### Core NATS
 
 | Node | Function | Input | Output |
 |------|----------|-------|--------|
@@ -79,21 +79,21 @@ Or in the Node-RED Editor:
 | **nats-suite-stats** | Detailed server statistics | - | `msg.payload` (Stats) |
 | **nats-suite-service** | Service API (Discovery, Stats, Endpoints) | `msg.operation` | `msg.payload` (Services/Stats/Requests) |
 
-### 🌊 JetStream
+### JetStream
 
 | Node | Function | Input | Output |
 |------|----------|-------|--------|
 | **nats-suite-stream-publisher** | Publishes to JetStream streams + Stream management (create/update/update-subjects/delete/purge/list/info) | `msg.payload`, Stream name, `msg.operation`, `msg.subjects` | - |
 | **nats-suite-stream-consumer** | Consumes from JetStream streams + Consumer management (create/info/delete/list/pause/resume/monitor) + Stream management (info/delete/purge) | `msg.operation`, `msg.consumer` | `msg.payload` (Stream messages or Consumer info) |
 
-### 💾 KV Store (Key-Value)
+### KV Store (Key-Value)
 
 | Node | Function | Input | Output |
 |------|----------|-------|--------|
 | **nats-suite-kv-get** | Reads values from KV Store + List keys + Watch | Key, `msg.operation` (get/keys/watch) | `msg.payload` (Value/Keys array) |
 | **nats-suite-kv-put** | Writes values to KV Store + Delete/Purge keys + Bucket management (create/info/delete/list) | Key, `msg.payload` (Value), `msg.operation` (put/create/update/delete/purge) | Status |
 
-### 📦 Object Store
+### Object Store
 
 | Node | Function | Input | Output |
 |------|----------|-------|--------|
@@ -183,9 +183,9 @@ Use the `nats-suite-server-manager` node:
 
 ---
 
-## ✨ Advanced Features
+## Advanced Features
 
-### 🔥 Core NATS Extensions
+### Core NATS Extensions
 
 #### **Message Headers**
 - Static headers in node configuration (JSON)
@@ -198,7 +198,7 @@ Use the `nats-suite-server-manager` node:
 - Dynamic TTL via `msg.expiration`
 - Automatic conversion to nanoseconds for NATS
 
-### 🌊 JetStream Extensions
+### JetStream Extensions
 
 #### **Stream Subject Update**
 - New operation `update-subjects` for Stream Publisher
@@ -217,7 +217,7 @@ Use the `nats-suite-server-manager` node:
 - Delivery rate calculation (messages/second)
 - Pause status display
 
-### 💾 KV Store Extensions
+### KV Store Extensions
 
 #### **KV Delete Operations** *(already available, documented)*
 - `delete` - Soft delete (marked as deleted)
@@ -228,7 +228,7 @@ Use the `nats-suite-server-manager` node:
 - Lists all keys of a bucket
 - Output: Array with all keys + count
 
-### 🔌 Service API (NEW)
+### Service API (NEW)
 
 Completely new node for NATS Service API (Microservice Discovery):
 

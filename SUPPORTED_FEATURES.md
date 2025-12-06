@@ -1,6 +1,6 @@
 # Supported NATS Features
 
-## ✅ Core NATS (Basic NATS Core Functionality)
+## Core NATS (Basic NATS Core Functionality)
 
 Fully supported by:
 
@@ -23,7 +23,7 @@ Fully supported by:
 - Clustering support
 - Leaf Node support
 
-## ✅ JetStream (JetStream Functionality)
+## JetStream (JetStream Functionality)
 
 Fully supported by:
 
@@ -44,7 +44,7 @@ Fully supported by:
 - Consumer pause/resume
 - Consumer monitoring
 
-## ✅ KV Store (NATS KV Functionality - uses JetStream)
+## KV Store (NATS KV Functionality - uses JetStream)
 
 Fully supported by:
 
@@ -63,7 +63,7 @@ Fully supported by:
 - Replication
 - Storage options (File/Memory)
 
-## ✅ Object Store (NATS Object Store Functionality - uses JetStream)
+## Object Store (NATS Object Store Functionality - uses JetStream)
 
 Fully supported by:
 
@@ -81,7 +81,7 @@ Fully supported by:
 - Replication
 - Storage options (File/Memory)
 
-## ✅ Service API (NATS Service API - Microservice Discovery)
+## Service API (NATS Service API - Microservice Discovery)
 
 Fully supported by:
 
@@ -101,13 +101,13 @@ Fully supported by:
 
 | Feature | Status | Nodes |
 |---------|--------|-------|
-| **Core NATS** | ✅ Complete | publish, subscribe, request, reply, server, health, stats |
-| **JetStream** | ✅ Complete | stream-publisher, stream-consumer |
-| **KV Store** | ✅ Complete | kv-get, kv-put |
-| **Object Store** | ✅ Complete | object-put, object-get |
-| **Service API** | ✅ Complete | service |
+| **Core NATS** | Complete | publish, subscribe, request, reply, server, health, stats |
+| **JetStream** | Complete | stream-publisher, stream-consumer |
+| **KV Store** | Complete | kv-get, kv-put |
+| **Object Store** | Complete | object-put, object-get |
+| **Service API** | Complete | service |
 
-## ✅ Additional Features
+## Additional Features
 
 ### Monitoring & Management
 - **nats-suite-health** - Server health monitoring
@@ -119,4 +119,4 @@ Fully supported by:
 
 ## Summary
 
-All major NATS features are now implemented! 🎉
+All major NATS features are now implemented!

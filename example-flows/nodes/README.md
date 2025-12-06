@@ -2,7 +2,7 @@
 
 Comprehensive example flows for each NATS Suite node, demonstrating all features and configuration options.
 
-## 📋 Available Flows
+## Available Flows
 
 ### 01 - Publish Node Examples (`01-publish-examples.json`)
 **Features demonstrated:**
@@ -170,7 +170,7 @@ Comprehensive example flows for each NATS Suite node, demonstrating all features
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Start NATS Server:**
    ```bash
@@ -194,7 +194,7 @@ Comprehensive example flows for each NATS Suite node, demonstrating all features
 
 ---
 
-## 📝 Notes
+## Notes
 
 - All flows use a shared `nats-suite-server` config node
 - Debug logging is enabled in most nodes for visibility
@@ -203,7 +203,7 @@ Comprehensive example flows for each NATS Suite node, demonstrating all features
 
 ---
 
-## 🔧 Customization
+## Customization
 
 ### Change Server URL
 1. Open Configuration Nodes
@@ -218,5 +218,5 @@ Comprehensive example flows for each NATS Suite node, demonstrating all features
 
 ---
 
-**Happy Testing! 🚀**
+**Happy Testing!**
 

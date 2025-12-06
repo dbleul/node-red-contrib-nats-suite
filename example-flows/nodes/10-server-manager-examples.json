@@ -4,7 +4,7 @@
         "type": "tab",
         "label": "Server Manager Node - All Features",
         "disabled": false,
-        "info": "Comprehensive examples for nats-suite-server-manager node\n\nFeatures demonstrated:\n- Start/Stop/Restart server\n- Status check\n- Embedded server\n- Process server\n- Leaf node"
+        "info": "Comprehensive examples for nats-suite-server-manager node\n\nFeatures demonstrated:\n- Start/Stop/Restart server\n- Status check\n- Embedded server (standalone or leaf node)"
     },
     {
         "id": "inject-start",
@@ -28,11 +28,11 @@
         "type": "nats-suite-server-manager",
         "z": "server-manager-examples",
         "name": "Embedded Server",
-        "serverType": "embedded",
         "port": 4222,
-        "leafPort": 7422,
         "enableJetStream": true,
         "storeDir": "",
+        "enableLeafNodeMode": false,
+        "leafPort": 7422,
         "leafRemoteUrl": "",
         "leafRemoteUser": "",
         "leafRemotePass": "",
@@ -109,59 +109,6 @@
         "x": 180,
         "y": 240,
         "wires": [["server-manager-embedded"]]
-    },
-    {
-        "id": "inject-process-start",
-        "type": "inject",
-        "z": "server-manager-examples",
-        "name": "5. Start Process Server",
-        "props": [{"p": "payload"}],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "{\"command\":\"start\"}",
-        "payloadType": "json",
-        "x": 200,
-        "y": 300,
-        "wires": [["server-manager-process"]]
-    },
-    {
-        "id": "server-manager-process",
-        "type": "nats-suite-server-manager",
-        "z": "server-manager-examples",
-        "name": "Process Server",
-        "serverType": "nats-server",
-        "port": 4222,
-        "leafPort": 7422,
-        "enableJetStream": true,
-        "storeDir": "",
-        "leafRemoteUrl": "",
-        "leafRemoteUser": "",
-        "leafRemotePass": "",
-        "autoStart": false,
-        "debug": true,
-        "x": 440,
-        "y": 300,
-        "wires": [["debug-process"]]
-    },
-    {
-        "id": "debug-process",
-        "type": "debug",
-        "z": "server-manager-examples",
-        "name": "Process Result",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 660,
-        "y": 300,
-        "wires": []
     }
 ]
 

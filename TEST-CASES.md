@@ -1,10 +1,10 @@
-# 🧪 NATS Suite - Test Cases & Use Cases
+# NATS Suite - Test Cases & Use Cases
 
 Complete test suite for all nodes and features of the NATS Suite.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Setup & Preparation](#setup--preparation)
 2. [Core NATS Tests](#core-nats-tests)
@@ -100,9 +100,9 @@ Flow:
 
 ---
 
-### 3. Publish - Message Heathes ✨ NEU
+### 3. Publish - Message Headers
 
-**Test: Heathes send**
+**Test: Headers send**
 
 Flow:
 ```
@@ -112,18 +112,18 @@ Flow:
 **Publish Config:**
 - Server: nats-server
 - Dataformat: `specific_topic`
-- Subject: `test.heathes`
-- ✅ Enable Heathes: TRUE
-- Static Heathes: `{"X-App": "Node-RED", "X-Version": "1.0"}`
-- Debug Logwent: TRUE
+- Subject: `test.headers`
+- Enable Headers: TRUE
+- Static Headers: `{"X-App": "Node-RED", "X-Version": "1.0"}`
+- Debug Logging: TRUE
 
 **Inject:**
 ```json
 {
   "payload": {
-    "message": "Test with heathes"
+    "message": "Test with headers"
   },
-  "heathes": {
+  "headers": {
     "X-User": "TestUser",
     "X-Request-ID": "12345"
   }
@@ -134,10 +134,10 @@ Flow:
 ```json
 {
   "payload": {
-    "message": "Test with heathes"
+    "message": "Test with headers"
   },
-  "topic": "test.heathes",
-  "heathes": {
+  "topic": "test.headers",
+  "headers": {
     "X-App": "Node-RED",
     "X-Version": "1.0",
     "X-User": "TestUser",
@@ -148,12 +148,12 @@ Flow:
 
 **Expected Debug Log:**
 ```
-[NATS-SUITE PUBLISH] Publishing with heathes: {"X-App":"Node-RED","X-Version":"1.0","X-User":"TestUser","X-Request-ID":"12345"}
+[NATS-SUITE PUBLISH] Publishing with headers: {"X-App":"Node-RED","X-Version":"1.0","X-User":"TestUser","X-Request-ID":"12345"}
 ```
 
 ---
 
-### 4. Publish - Message Expiration (TTL) ✨ NEU
+### 4. Publish - Message Expiration (TTL)
 
 **Test: Message TTL**
 
@@ -166,9 +166,9 @@ Flow:
 - Server: nats-server
 - Dataformat: `specific_topic`
 - Subject: `test.expiration`
-- ✅ Enable Message Expiration: TRUE
+- Enable Message Expiration: TRUE
 - Expiration Time: `5` (seconds)
-- Debug Logwent: TRUE
+- Debug Logging: TRUE
 
 **Test A - Static TTL:**
 ```json
@@ -332,7 +332,7 @@ Flow:
   "operation": "create",
   "stream": "test-stream",
   "subjects": "test.>, sensor.>",
-  "retention": "liwiths",
+  "retention": "limits",
   "maxMessages": 1000,
   "maxAge": "1h"
 }
@@ -351,9 +351,9 @@ Flow:
 
 ---
 
-### 8. Stream Publisher - Update Subjects ✨ NEU
+### 8. Stream Publisher - Update Subjects
 
-**Test: Nur Subjects update**
+**Test: Only Subjects update**
 
 Flow:
 ```
@@ -479,9 +479,9 @@ return msg;
 
 ---
 
-### 11. Consumer - Pfrome/Resume ✨ NEU
+### 11. Consumer - Pause/Resume
 
-**Test A: Consumer pfrome**
+**Test A: Consumer pause**
 
 Flow:
 ```
@@ -489,14 +489,14 @@ Flow:
 ```
 
 **Config:**
-- Operation: `pfrome`
+- Operation: `pause`
 - Stream Name: `test-stream`
 - Consumer Name: `test-consumer`
 
 **Inject:**
 ```json
 {
-  "operation": "pfrome"
+  "operation": "pause"
 }
 ```
 
@@ -504,10 +504,10 @@ Flow:
 ```json
 {
   "payload": {
-    "operation": "pfrome",
+    "operation": "pause",
     "consumer": "test-consumer",
     "success": true,
-    "pfromed": true
+    "paused": true
   }
 }
 ```
@@ -528,22 +528,22 @@ Flow:
     "operation": "resume",
     "consumer": "test-consumer",
     "success": true,
-    "pfromed": false
+    "paused": false
   }
 }
 ```
 
-**Test C: Pfrome during Consumption**
+**Test C: Pause during Consumption**
 
 Setup:
-1. Stream with 100 fill with messages
+1. Stream with 100 messages
 2. Consumer with Batch Size 100 start
-3. After 2 seconds: Pfrome send
+3. After 2 seconds: Pause send
 4. Consumer should stop (in the middle of batch)
 
 ---
 
-### 12. Consumer - Monitor Stats ✨ NEU
+### 12. Consumer - Monitor Stats
 
 **Test: Detailed Consumer Stats**
 
@@ -578,7 +578,7 @@ Flow:
       "redelivered": 1,
       "waiting": 0,
       "delivery_rate": 5.25,
-      "pfromed": false
+      "paused": false
     },
     "config": { /* Consumer Config */ },
     "timestamp": 1234567890
@@ -647,7 +647,7 @@ Flow:
 
 ---
 
-### 14. KV Delete/Purge Keys ✨ NEU
+### 14. KV Delete/Purge Keys
 
 **Test A: Soft Delete**
 
@@ -742,9 +742,9 @@ Flow:
 
 ---
 
-### 16. KV Lis Keys ✨ NEU
+### 16. KV List Keys
 
-**Test: All Keys lis**
+**Test: All Keys list**
 
 Flow:
 ```
@@ -779,7 +779,7 @@ Flow:
 
 ### 17. KV Watch Keys
 
-**Test: Key-Äntheungen monitor**
+**Test: Key changes monitor**
 
 Flow:
 ```
@@ -789,7 +789,7 @@ Flow:
 **Config:**
 - Mode: `watch`
 - Bucket: `config-store`
-- Watch Pattern: `app.config.*` (or leer for all)
+- Watch Pattern: `app.config.*` (or empty for all)
 - Ignore Deletes: FALSE
 
 **No Inject needed - runs automatically**
@@ -816,7 +816,7 @@ Flow:
 
 ### 18. Object Put - Upload
 
-**Test: Objekt upload**
+**Test: Object upload**
 
 Flow:
 ```
@@ -858,7 +858,7 @@ Flow:
 
 ### 19. Object Get - Download
 
-**Test: Objekt download**
+**Test: Object download**
 
 Flow:
 ```
@@ -897,9 +897,9 @@ Flow:
 
 ---
 
-### 20. Object Lis
+### 20. Object List
 
-**Test: All Objekte lis**
+**Test: All Objects list**
 
 Flow:
 ```
@@ -907,13 +907,13 @@ Flow:
 ```
 
 **Config:**
-- Operation: `lis`
+- Operation: `list`
 - Bucket: `files`
 
 **Inject:**
 ```json
 {
-  "operation": "lis"
+  "operation": "list"
 }
 ```
 
@@ -938,7 +938,7 @@ Flow:
 
 ---
 
-## Service API Tests ✨ NEU
+## Service API Tests
 
 ### 21. Service - Discovery
 
@@ -1379,7 +1379,7 @@ return null;
 
 Flow:
 ```
-[inject: repeat 1000] → [nats-suite-publish] → [coanthe]
+[inject: repeat 1000] → [nats-suite-publish] → [counter]
 ```
 
 **Inject Loop (Function):**
@@ -1400,14 +1400,14 @@ return null;
 
 ---
 
-### 29. Stress Test - Consumer with Pfrome
+### 29. Stress Test - Consumer with Pause
 
-**Test: Pfrome anthe load**
+**Test: Pause under load**
 
 Setup:
-1. Stream with 10.000 fill with messages
+1. Stream with 10.000 messages
 2. Consumer with Batch 100 start
-3. After 50 Batches: Pfrome
+3. After 50 Batches: Pause
 4. After 5 seconds: Resume
 5. Verify: All Messages consumed
 
@@ -1419,7 +1419,7 @@ Setup:
 
 ### 30. Connection Loss Recovery
 
-**Test:** Buffering at Connectionsabbruch
+**Test:** Buffering on Connection Interruption
 
 1. Start NATS Server
 2. Start Publish Flow with buffering enabled
@@ -1430,26 +1430,26 @@ Setup:
 
 ---
 
-## Validation allr Tests
+## Validation Tests
 
-### Checklis
+### Checklist
 
 - [ ] Server Config Connection
 - [ ] Basic Pub/Sub
-- [ ] Message Heathes
+- [ ] Message Headers
 - [ ] Message Expiration
 - [ ] Request/Reply
 - [ ] Health & Stats
 - [ ] Stream Create/Update
 - [ ] Stream Subject Update
 - [ ] Stream Publish/Consume
-- [ ] Consumer Pfrome/Resume
+- [ ] Consumer Pause/Resume
 - [ ] Consumer Monitoring
 - [ ] KV Put/Get
 - [ ] KV Delete/Purge
-- [ ] KV Lis Keys
+- [ ] KV List Keys
 - [ ] KV Watch
-- [ ] Object Put/Get/Lis
+- [ ] Object Put/Get/List
 - [ ] Service Discovery
 - [ ] Service Stats
 - [ ] Service Ping
@@ -1460,5 +1460,5 @@ Setup:
 
 ---
 
-**Status:** All Use Cases defined and ready for testing! 🚀
+**Status:** All Use Cases defined and ready for testing!
 
