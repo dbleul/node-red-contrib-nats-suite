@@ -54,12 +54,18 @@ module.exports = function (RED) {
     let connectionStartTime = null;
     let queueGroup = null; // Queue group for load balancing
 
+    // Message logging: Only log if debug flag is set
+    const isDebug = !!config.debug;
+
     // Get base subject from config (used as fallback if no dynamic subject provided)
     baseSubject = config.datapointid || '';
     
     // Initialize with base subject if available
     if (baseSubject) {
       currentSubject = baseSubject;
+      if (isDebug) {
+        node.log(`[[NATS-SUITE SUBSCRIBE] Initialized with base subject: ${baseSubject}`);
+      }
     }
     
     // Parse mode
@@ -75,6 +81,9 @@ module.exports = function (RED) {
       
       switch (statusValue) {
         case 'connected':
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Server connected`);
+          }
           
           // Clear connection timeout
           if (connectionTimeout) {
@@ -94,6 +103,10 @@ module.exports = function (RED) {
           }
           break;
         case 'disconnected':
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Server disconnected`);
+          }
+          
           // Clear connection timeout
           if (connectionTimeout) {
             clearTimeout(connectionTimeout);
@@ -107,6 +120,10 @@ module.exports = function (RED) {
           }
           break;
         case 'connecting':
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Server connecting...`);
+          }
+          
           setStatusYellow();
           
           // Start connection timeout warning
@@ -137,6 +154,10 @@ module.exports = function (RED) {
 
     // Helper function for message processing (DRY principle)
     const processMessage = (msg) => {
+      if (isDebug) {
+        node.log(`[[NATS-SUITE SUBSCRIBE] Processing message from subject: ${currentSubject}`);
+      }
+      
       let message = sc.decode(msg.data);
       let send_message;
 
@@ -150,6 +171,9 @@ module.exports = function (RED) {
             if (typeof message === 'string' && message.trim().length > 0) {
               try {
                 parsedPayload = JSON.parse(message);
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Parsed message as JSON`);
+                }
               } catch (parseError) {
                 // Keep as string (expected for non-JSON messages)
                 parsedPayload = message;
@@ -161,13 +185,19 @@ module.exports = function (RED) {
             // Force JSON parsing
             try {
               parsedPayload = JSON.parse(message);
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Parsed message as JSON (forced mode)`);
+              }
             } catch (parseError) {
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] JSON parsing failed: ${parseError.message}`);
+              }
               node.error({
                 message: 'JSON parsing failed',
                 code: 'JSON_PARSE_ERROR',
                 originalError: parseError.message
               }, {
-                topic: subject,
+                topic: msg.subject,
                 rawData: message
               });
               return; // Stop processing on error
@@ -176,11 +206,17 @@ module.exports = function (RED) {
             
           case 'string':
             // Keep as string
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Message kept as string`);
+            }
             parsedPayload = message;
             break;
             
           case 'buffer':
             // Keep as buffer
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Message kept as buffer`);
+            }
             parsedPayload = msg.data;
             break;
             
@@ -189,13 +225,19 @@ module.exports = function (RED) {
             // Safe JSON parsing with error handling
             try {
               message = JSON.parse(message);
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Parsed uns_value message as JSON`);
+              }
             } catch (parseError) {
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] JSON parsing failed for uns_value: ${parseError.message}`);
+              }
               node.error({
                 message: 'Invalid JSON in NATS-SUITE value message',
                 code: 'JSON_PARSE_ERROR',
                 originalError: parseError.message
               }, { 
-                topic: subject, 
+                topic: msg.subject, 
                 rawData: message,
                 errorContext: 'uns_value parsing'
               });
@@ -206,26 +248,47 @@ module.exports = function (RED) {
             switch (message.datatype) {
               case 1: // Integer
                 message.value = parseInt(message.value, 10);
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Converted value to integer: ${message.value}`);
+                }
                 break;
               case 2: // Float
                 message.value = parseFloat(message.value);
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Converted value to float: ${message.value}`);
+                }
                 break;
               case 3: // Boolean
                 message.value = message.value === 'true' || message.value === '1';
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Converted value to boolean: ${message.value}`);
+                }
                 break;
               case 4: // String
                 // String stays string - no conversion needed
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Value is string type`);
+                }
                 break;
               case 5: // JSON
                 try {
                   message.value = JSON.parse(message.value);
+                  if (isDebug) {
+                    node.log(`[[NATS-SUITE SUBSCRIBE] Converted value to JSON`);
+                  }
                 } catch (e) {
                   // If JSON parsing fails, keep as string
+                  if (isDebug) {
+                    node.log(`[[NATS-SUITE SUBSCRIBE] JSON parsing failed for value, keeping as string`);
+                  }
                   // Silent fail - keep as string
                 }
                 break;
               default:
                 // Unknown datatype - value stays unchanged
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Unknown datatype ${message.datatype}, value unchanged`);
+                }
                 break;
             }
             
@@ -237,6 +300,10 @@ module.exports = function (RED) {
               topicValue = message.name;
             } else if (config.topicfield === 'datatype') {
               topicValue = String(message.datatype);
+            }
+            
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Topic set to: ${topicValue}`);
             }
             
             // For NATS-SUITE Value: Only value as payload, rest as msg properties
@@ -253,6 +320,9 @@ module.exports = function (RED) {
             // For NATS-SUITE Events: Parse JSON and extract event information
             try {
               message = JSON.parse(message);
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Parsed uns_event message as JSON`);
+              }
               
               // Set topic field based on configuration
               let topicValue = msg.subject; // Default
@@ -262,6 +332,10 @@ module.exports = function (RED) {
                 topicValue = message.type || 'event';
               } else if (config.topicfield === 'datatype') {
                 topicValue = 'event';
+              }
+              
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Event topic set to: ${topicValue}`);
               }
               
               // For NATS-SUITE Events: Event details as payload, additional properties available
@@ -275,6 +349,9 @@ module.exports = function (RED) {
                 timestamp: message.timestamp || Date.now()
               };
             } catch (parseError) {
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] JSON parsing failed for uns_event: ${parseError.message}`);
+              }
               // If JSON parsing fails, log error and use raw message
               node.warn({
                 message: 'Invalid JSON in NATS-SUITE event message, using raw data',
@@ -302,6 +379,13 @@ module.exports = function (RED) {
         if (msg.reply) {
           send_message._unsreply = msg.reply;
           send_message._reply = msg.reply;
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Reply-To subject: ${msg.reply}`);
+          }
+        }
+
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] Sending output message`);
         }
 
         node.send(send_message);
@@ -311,12 +395,15 @@ module.exports = function (RED) {
           code: err.code || 'UNKNOWN',
           name: err.name || 'Error',
         };
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] Error processing message: ${err.stack}`);
+        }
         // Safe error reporting with fallback
-              node.error(cleanError, { 
-                topic: currentSubject || baseSubject, 
-                rawData: msg?.data ? String(msg.data) : 'N/A',
-                errorContext: 'processMessage'
-              });
+        node.error(cleanError, { 
+          topic: currentSubject || baseSubject, 
+          rawData: msg?.data ? String(msg.data) : 'N/A',
+          errorContext: 'processMessage'
+        });
       }
     };
 
@@ -341,6 +428,9 @@ module.exports = function (RED) {
         if (!targetSubject || targetSubject.trim() === '') {
           node.error('No subject specified. Please configure a NATS subject or provide msg.topic/msg.subject.');
           setStatusRed();
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] setupSubscription aborted: no subject specified`);
+          }
           return;
         }
         
@@ -351,9 +441,20 @@ module.exports = function (RED) {
         const subjectChanged = targetSubject !== currentSubject;
         const queueGroupChanged = targetQueueGroup !== queueGroup;
         
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] setupSubscription called for subject: ${targetSubject}${targetQueueGroup ? ` (queue: ${targetQueueGroup})` : ''}`);
+          node.log(`[[NATS-SUITE SUBSCRIBE] Target subject: "${targetSubject}", Current subject: "${currentSubject}"`);
+          if (!subjectChanged && !queueGroupChanged) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Subscription unchanged, skipping setup`);
+          }
+        }
+        
         if (subjectChanged || queueGroupChanged) {
           // Cleanup old subscription
           if (subscription) {
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Unsubscribing from previous subscription`);
+            }
             subscription.unsubscribe();
             subscription = null;
           }
@@ -376,15 +477,24 @@ module.exports = function (RED) {
           // Subscribe with queue group for load balancing
           subscription = natsnc.subscribe(targetSubject, { queue: targetQueueGroup });
           node.log(`Subscribed to "${targetSubject}" with queue group "${targetQueueGroup}"`);
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Subscription created for "${targetSubject}" with queue "${targetQueueGroup}"`);
+          }
         } else {
           // Regular subscription without queue group
           subscription = natsnc.subscribe(targetSubject);
           node.log(`Subscribed to "${targetSubject}"`);
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Subscription created for "${targetSubject}"`);
+          }
         }
         
         // Async iterator for message processing
         subscriptionIterator = (async () => {
           try {
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Message listener started, waiting for messages...`);
+            }
             for await (const msg of subscription) {
               processMessage(msg);
             }
@@ -396,6 +506,9 @@ module.exports = function (RED) {
                 code: err.code,
                 name: err.name,
               };
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Iterator error: ${err.code} - ${err.message}`);
+              }
               node.error(cleanError, { topic: currentSubject });
             }
           }
@@ -407,6 +520,9 @@ module.exports = function (RED) {
           code: err.code,
           name: err.name,
         };
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] setupSubscription error: ${err.message}`);
+        }
         node.error(cleanError, { topic: currentSubject || baseSubject });
       }
     };
@@ -416,14 +532,30 @@ module.exports = function (RED) {
       try {
         // Only process dynamic subscription changes if mode is set to dynamic
         if (subscriptionMode !== 'dynamic') {
+          if (isDebug) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Input received but subscription mode is static, ignoring`);
+          }
           // In static mode, ignore input messages for subscription changes
           // Input messages are not used for subscription management
           return;
         }
         
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] Input received in dynamic mode, checking for subject/queue updates`);
+        }
+        
         // Check for dynamic subject in msg properties
         const dynamicSubject = msg.topic || msg.subject || null;
         const dynamicQueueGroup = msg.queueGroup || msg.queue || null;
+        
+        if (isDebug) {
+          if (dynamicSubject) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Dynamic subject from input: ${dynamicSubject}`);
+          }
+          if (dynamicQueueGroup) {
+            node.log(`[[NATS-SUITE SUBSCRIBE] Dynamic queue group from input: ${dynamicQueueGroup}`);
+          }
+        }
         
         // Only update subscription if subject or queue group is provided
         if (dynamicSubject || dynamicQueueGroup !== null) {
@@ -433,6 +565,9 @@ module.exports = function (RED) {
             // Check if connection is ready
             if (!natsnc || natsnc.isClosed()) {
               node.warn('NATS connection not ready. Subscription change will be applied when connected.');
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] NATS connection not ready for subscription update`);
+              }
               return;
             }
             
@@ -440,9 +575,15 @@ module.exports = function (RED) {
             // If dynamicSubject is null but dynamicQueueGroup is set, keep current subject
             // If dynamicSubject is empty string, reset to base subject
             const newSubject = dynamicSubject !== null ? (dynamicSubject || baseSubject) : null;
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Updating subscription with subject: ${newSubject}${dynamicQueueGroup ? `, queue: ${dynamicQueueGroup}` : ''}`);
+            }
             await setupSubscription(newSubject, dynamicQueueGroup);
           } catch (err) {
             node.warn(`Cannot update subscription: ${err.message}. Will retry when connected.`);
+            if (isDebug) {
+              node.log(`[[NATS-SUITE SUBSCRIBE] Subscription update failed: ${err.message}`);
+            }
           }
         } else {
           // No dynamic properties provided - reset to base subject if in dynamic mode
@@ -450,10 +591,16 @@ module.exports = function (RED) {
             try {
               const natsnc = await this.config.getConnection();
               if (natsnc && !natsnc.isClosed()) {
+                if (isDebug) {
+                  node.log(`[[NATS-SUITE SUBSCRIBE] Resetting subscription to base subject: ${baseSubject}`);
+                }
                 await setupSubscription(baseSubject, null);
               }
             } catch (err) {
               // Ignore errors during reset
+              if (isDebug) {
+                node.log(`[[NATS-SUITE SUBSCRIBE] Reset to base subject failed (ignoring): ${err.message}`);
+              }
             }
           }
         }
@@ -464,6 +611,9 @@ module.exports = function (RED) {
           code: err.code || 'INPUT_ERROR',
           name: err.name || 'Error',
         };
+        if (isDebug) {
+          node.log(`[[NATS-SUITE SUBSCRIBE] Input handler error: ${err.stack}`);
+        }
         node.error(cleanError);
       }
     });
